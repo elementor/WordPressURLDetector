@@ -1,0 +1,30 @@
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+    level: max
+    phpVersion: 80000
+    inferPrivatePropertyTypeFromConstructor: true
+    paths:
+        - %currentWorkingDirectory%/src/
+        - %currentWorkingDirectory%/views/
+        - %currentWorkingDirectory%/wp2static.php
+    scanFiles:
+        - %currentWorkingDirectory%/tests/phpstan/bootstrap.php
+        # TODO Use https://github.com/php-stubs/wp-cli-stubs
+        - %currentWorkingDirectory%/tests/phpstan/wp-cli-stubs-2.2.0.php
+    ignoreErrors:
+        # TODO I should really develop a tiny Request Handler.
+        # https://gist.github.com/nicolas-grekas/1028251#improving-native-php-interface
+        - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
+          path: src/Controller.php
+          count: 5
+        - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
+          path: src/CoreOptions.php
+          count: 19
+        - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
+          path: src/ViewRenderer.php
+          count: 32
+        - '/^Parameter #2 \$callable of static method WP_CLI::add_command\(\) expects callable\(\): mixed, \S+ given\.$/'
+

@@ -1,0 +1,76 @@
+{
+    "name": "leonstafford/wordpressurldetector",
+    "description": "A library to get all public URLs from a WordPress application.",
+    "homepage": "https://github.com/leonstafford/WordPressURLDetector",
+    "license": "UNLICENSE",
+    "authors": [
+        {
+            "name": "Leon Stafford",
+            "email": "me@ljs.dev",
+            "homepage": "https://ljs.dev"
+        }
+    ],
+    "type": "library",
+    "support": {
+        "issues": "https://github.com/leonstafford/WordPressURLDetector/issues",
+        "forum": "https://github.com/leonstafford/WordPressURLDetector/discussion",
+        "docs": "https://github.com/leonstafford/WordPressURLDetector",
+        "source": "https://github.com/leonstafford/WordPressURLDetector"
+    },
+    "require": {
+        "php": ">=7.4",
+        "monolog/monolog": "^2.2.0",
+        "ext-mbstring": "*",
+        "ext-simplexml": "*",
+        "lib-libxml": "*"
+    },
+    "repositories": [
+      {
+        "type": "git",
+        "url": "https://github.com/leonstafford/PHP_CodeSniffer"
+      }
+    ],
+    "require-dev": {
+        "10up/wp_mock": "*",
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "infection/infection": "*",
+        "mikey179/vfsstream": "*",
+        "mockery/mockery": "*",
+        "pestphp/pest": "*",
+        "php-parallel-lint/php-parallel-lint": "*",
+        "php-parallel-lint/php-parallel-lint": "*",
+        "phpcompatibility/php-compatibility": "*",
+        "phpstan/phpstan-strict-rules": "*",
+        "phpunit/phpunit": "*",
+        "squizlabs/php_codesniffer": "dev-master",
+        "szepeviktor/phpcs-psr-12-neutron-hybrid-ruleset": "*",
+        "vimeo/psalm": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "WordPressURLDetector\\": "src/"
+        }
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "classmap-authoritative": true
+    },
+    "scripts": {
+      "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan analyse",
+      "phpcbf": "vendor/bin/phpcbf --standard=phpcs.xml . bin/wordpressurldetector",
+      "phpcs":  "vendor/bin/phpcs --standard=phpcs.xml . bin/wordpressurldetector",
+      "pest": "vendor/bin/pest",
+      "coverage": "vendor/bin/pest --coverage",
+      "lint": "vendor/bin/parallel-lint --exclude vendor .",
+      "test": [
+          "composer validate --strict",
+          "@lint",
+          "@phpcs",
+          "@phpstan",
+          "@pest",
+          "@coverage"
+      ]
+    }
+}
