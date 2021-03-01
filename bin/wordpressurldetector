@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * bin/wordpressurldetector
+ *
+ * A library to get all public URLs from a WordPress application.
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
+declare(strict_types=1);
+
+namespace WordPressURLDetector;
+
+// Load autoloader.
+if (! class_exists(Auditor::class) && is_file(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
+}
+
+// TODO: instantiate with DetectorConfig 
+exit((new Detector($argv[1] ?? __DIR__ . '/..'))->runDetector());
