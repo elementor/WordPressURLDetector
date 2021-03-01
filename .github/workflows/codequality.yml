@@ -3,11 +3,11 @@ name: codequality
 on:
   push:
     branches:
-    - master
+    - main
     - develop
   pull_request:
     branches:
-    - master
+    - main
     - develop
 jobs:
   shellcheck:
@@ -22,7 +22,7 @@ jobs:
 
     strategy:
       matrix:
-        php: ["7.4", "8.0]
+        php: ["7.4", "8.0"]
 
     name: PHP-${{ matrix.php }} 
 
