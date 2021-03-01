@@ -38,7 +38,6 @@
         "mockery/mockery": "*",
         "pestphp/pest": "*",
         "php-parallel-lint/php-parallel-lint": "*",
-        "php-parallel-lint/php-parallel-lint": "*",
         "phpcompatibility/php-compatibility": "*",
         "phpstan/phpstan-strict-rules": "*",
         "phpunit/phpunit": "*",
@@ -58,9 +57,9 @@
         "classmap-authoritative": true
     },
     "scripts": {
-      "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan analyse",
-      "phpcbf": "vendor/bin/phpcbf --standard=phpcs.xml . bin/wordpressurldetector",
-      "phpcs":  "vendor/bin/phpcs --standard=phpcs.xml . bin/wordpressurldetector",
+      "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan --configuration conf/phpstan.neon analyse",
+      "phpcbf": "vendor/bin/phpcbf --standard=conf/phpcs.xml . bin/wordpressurldetector",
+      "phpcs":  "vendor/bin/phpcs --standard=conf/phpcs.xml . bin/wordpressurldetector",
       "pest": "vendor/bin/pest",
       "coverage": "vendor/bin/pest --coverage",
       "lint": "vendor/bin/parallel-lint --exclude vendor .",

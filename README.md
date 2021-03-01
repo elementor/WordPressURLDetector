@@ -28,3 +28,7 @@ I want you to be part of the journey with me, so please sponsor any amount you c
 
  - via [Composer](https://github.com/composer/composer) `composer require leonstafford/wordpressurldetector`
 
+
+## Development
+
+Note: requires `composer install --ignore-platform-reqs` on PHP >= 8 as some packages aren't up to date.
