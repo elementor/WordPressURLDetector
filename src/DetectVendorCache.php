@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class DetectVendorCache {
+class DetectVendorCache
+{
     /**
      *   Autoptimize and other vendors use a cache dir one level above the
      *   uploads URL
@@ -15,19 +18,19 @@ class DetectVendorCache {
      *   So, we grab all the files from the its actual cache dir
      *   then strip the site path and any subdir path (no extra logic needed?)
      *
-     * @return string[] list of URLs
+     * @return array<string> list of URLs
      */
     public static function detect(
         string $cache_dir,
         string $path_to_trim,
         string $prefix
-        ) : array {
+    ): array {
 
         $files = [];
 
         $directory = $cache_dir;
 
-        if ( is_dir( $directory ) ) {
+        if (is_dir($directory)) {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator(
                     $directory,
@@ -35,24 +38,26 @@ class DetectVendorCache {
                 )
             );
 
-            foreach ( $iterator as $filename => $file_object ) {
+            foreach ($iterator as $filename => $file_object) {
                 $path_crawlable =
-                    FilesHelper::filePathLooksCrawlable( $filename );
+                    FilesHelper::filePathLooksCrawlable($filename);
 
                 // Standardise all paths to use / (Windows support)
-                $filename = str_replace( '\\', '/', $filename );
+                $filename = str_replace('\\', '/', $filename);
 
-                if ( ! is_string( $filename ) ) {
+                if (! is_string($filename)) {
                     continue;
                 }
 
-                if ( $path_crawlable ) {
-                    array_push(
-                        $files,
-                        $prefix .
-                        home_url( str_replace( $path_to_trim, '', $filename ) )
-                    );
+                if (!$path_crawlable) {
+                    continue;
                 }
+
+                array_push(
+                    $files,
+                    $prefix .
+                    home_url(str_replace($path_to_trim, '', $filename))
+                );
             }
         }
 

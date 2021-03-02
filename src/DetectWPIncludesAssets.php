@@ -1,26 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
-class DetectWPIncludesAssets {
+class DetectWPIncludesAssets
+{
 
     /**
      * Detect assets within wp-includes path
      *
-     * @return string[] list of URLs
+     * @return array<string> list of URLs
      * @throw WordPressURLDetectorException
      */
-    public static function detect() : array {
+    public static function detect(): array
+    {
         $files = [];
 
-        $includes_path = SiteInfo::getPath( 'includes' );
-        $includes_url = SiteInfo::getUrl( 'includes' );
-        $home_url = SiteInfo::getUrl( 'home' );
+        $includes_path = SiteInfo::getPath('includes');
+        $includes_url = SiteInfo::getUrl('includes');
+        $home_url = SiteInfo::getUrl('home');
 
-        if ( is_dir( $includes_path ) ) {
+        if (is_dir($includes_path)) {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator(
                     $includes_path,
@@ -28,12 +32,12 @@ class DetectWPIncludesAssets {
                 )
             );
 
-            foreach ( $iterator as $filename => $file_object ) {
+            foreach ($iterator as $filename => $file_object) {
                 $path_crawlable =
-                    FilesHelper::filePathLooksCrawlable( $filename );
+                    FilesHelper::filePathLooksCrawlable($filename);
 
                 // Standardise all paths to use / (Windows support)
-                $filename = str_replace( '\\', '/', $filename );
+                $filename = str_replace('\\', '/', $filename);
 
                 $detected_filename =
                     str_replace(
@@ -49,16 +53,18 @@ class DetectWPIncludesAssets {
                         $detected_filename
                     );
 
-                if ( ! is_string( $detected_filename ) ) {
+                if (! is_string($detected_filename)) {
                     continue;
                 }
 
-                if ( $path_crawlable ) {
-                    array_push(
-                        $files,
-                        '/' . $detected_filename
-                    );
+                if (!$path_crawlable) {
+                    continue;
                 }
+
+                array_push(
+                    $files,
+                    '/' . $detected_filename
+                );
             }
         }
 

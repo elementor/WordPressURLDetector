@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
     URL object
 
@@ -7,15 +10,12 @@
 
 namespace WordPressURLDetector;
 
-class URL {
+class URL
+{
 
-    /**
-     * @var \Wa72\Url\Url
-     */
+    /** @var \Wa72\Url\Url */
     private $parent_page_url;
-    /**
-     * @var \Wa72\Url\Url
-     */
+    /** @var \Wa72\Url\Url */
     private $url;
 
     /**
@@ -23,18 +23,19 @@ class URL {
      *
      * @param string $parent_page_url URL optional parent page to make
      * absolute URL from
-     * @throws WordPressURLDetectorException
+     * @throws \WordPressURLDetector\WordPressURLDetectorException
      */
-    public function __construct( string $url, string $parent_page_url = null ) {
-        $url = new \Wa72\Url\Url( $url );
+    public function __construct( string $url, ?string $parent_page_url = null )
+    {
+        $url = new \Wa72\Url\Url($url);
 
-        if ( $parent_page_url ) {
-            $this->parent_page_url = new \Wa72\Url\Url( $parent_page_url );
-            $this->url = $url->makeAbsolute( $this->parent_page_url );
+        if ($parent_page_url) {
+            $this->parent_page_url = new \Wa72\Url\Url($parent_page_url);
+            $this->url = $url->makeAbsolute($this->parent_page_url);
         } else {
             // test absolute URL
-            if ( ! $url->getHost() ) {
-                throw new WordPressURLDetectorException(
+            if (! $url->getHost()) {
+                throw new \WordPressURLDetector\WordPressURLDetectorException(
                     'Trying to create unsupported URL'
                 );
             }
@@ -46,7 +47,8 @@ class URL {
     /**
      * Return the URL as a string
      */
-    public function get() : string {
+    public function get(): string
+    {
         return $this->url;
     }
 
@@ -56,11 +58,11 @@ class URL {
      *
      * @param string $destination_url URL rewrite rules
      */
-    public function rewriteHostAndProtocol( string $destination_url ) : void {
-        $destination_url = new \Wa72\Url\Url( $destination_url );
+    public function rewriteHostAndProtocol( string $destination_url ): void
+    {
+        $destination_url = new \Wa72\Url\Url($destination_url);
 
-        $this->url->setHost( $destination_url->getHost() );
-        $this->url->setScheme( $destination_url->getScheme() );
+        $this->url->setHost($destination_url->getHost());
+        $this->url->setScheme($destination_url->getScheme());
     }
 }
-

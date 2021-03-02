@@ -1,22 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use PHPUnit\Framework\TestCase;
-
-class SitemapStrictTest extends TestCase {
+class SitemapStrictTest extends \PHPUnit\Framework\TestCase
+{
 
     /**
      * @dataProvider generateDataForTest
      * @param string $url URL
      * @param string $body URL body content
      */
-    public function testStrict( $url, $body ) {
-        $parser = new SitemapParser( 'SitemapParser', [] );
-        $this->assertInstanceOf( 'WordPressURLDetector\SitemapParser', $parser );
-        $parser->parse( $url, $body );
-        $this->assertEquals( [], $parser->getSitemaps() );
-        $this->assertEquals( [], $parser->getURLs() );
+    public function testStrict( $url, $body )
+    {
+        $parser = new SitemapParser('SitemapParser', []);
+        $this->assertInstanceOf('WordPressURLDetector\SitemapParser', $parser);
+        $parser->parse($url, $body);
+        $this->assertEquals([], $parser->getSitemaps());
+        $this->assertEquals([], $parser->getURLs());
     }
 
     /**
@@ -24,11 +26,12 @@ class SitemapStrictTest extends TestCase {
      *
      * @return array
      */
-    public function generateDataForTest() {
+    public function generateDataForTest()
+    {
         return [
             [
                 'http://www.example.com/sitemap.txt',
-                <<<TEXT
+                <<<'TEXT'
 http://www.example.com/sitemap1.xml
 http://www.example.com/sitemap2.xml
 http://www.example.com/sitemap3.xml.gz

@@ -1,24 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use WordPressURLDetectorGuzzleHttp\Client;
 use WordPressURLDetectorGuzzleHttp\Psr7\Request;
-use WordPressURLDetectorGuzzleHttp\Psr7\Response;
 
-class DetectSitemapsURLs {
+class DetectSitemapsURLs
+{
 
     /**
      * Detect Authors URLs
      *
-     * @return string[] list of URLs
-     * @throws WordPressURLDetectorException
+     * @return array<string> list of URLs
+     * @throws \WordPressURLDetector\WordPressURLDetectorException
      */
-    public static function detect( string $wp_site_url ) : array {
+    public static function detect( string $wp_site_url ): array
+    {
         $sitemaps_urls = [];
-        $parser = new SitemapParser( 'WordPressURLDetector.com', [ 'strict' => false ] );
+        $parser = new SitemapParser('WordPressURLDetector.com', [ 'strict' => false ]);
 
-        $site_path = rtrim( SiteInfo::getURL( 'site' ), '/' );
+        $site_path = rtrim(SiteInfo::getURL('site'), '/');
 
         $port_override = apply_filters(
             'wp2static_curl_port',
@@ -27,7 +30,7 @@ class DetectSitemapsURLs {
 
         $base_uri = $site_path;
 
-        if ( $port_override ) {
+        if ($port_override) {
             $base_uri = "{$base_uri}:{$port_override}";
         }
 
@@ -41,7 +44,7 @@ class DetectSitemapsURLs {
                     // required to get effective_url
                     'track_redirects' => true,
                 ],
-                'connect_timeout'  => 0,
+                'connect_timeout' => 0,
                 'timeout' => 600,
                 'headers' => [
                     'User-Agent' => apply_filters(
@@ -54,19 +57,19 @@ class DetectSitemapsURLs {
 
         $headers = [];
 
-        $auth_user = CoreOptions::getValue( 'basicAuthUser' );
+        $auth_user = CoreOptions::getValue('basicAuthUser');
 
-        if ( $auth_user ) {
-            $auth_password = CoreOptions::getValue( 'basicAuthPassword' );
+        if ($auth_user) {
+            $auth_password = CoreOptions::getValue('basicAuthPassword');
 
-            if ( $auth_password ) {
+            if ($auth_password) {
                 $headers['auth'] = [ $auth_user, $auth_password ];
             }
         }
 
-        $request = new Request( 'GET', '/robots.txt', $headers );
+        $request = new Request('GET', '/robots.txt', $headers);
 
-        $response = $client->send( $request );
+        $response = $client->send($request);
 
         $robots_exists = $response->getStatusCode() === 200;
 
@@ -74,13 +77,13 @@ class DetectSitemapsURLs {
             $sitemaps = [];
 
             // if robots exists, parse for possible sitemaps
-            if ( $robots_exists ) {
-                $parser->parseRecursive( $wp_site_url . 'robots.txt' );
+            if ($robots_exists) {
+                $parser->parseRecursive($wp_site_url . 'robots.txt');
                 $sitemaps = $parser->getSitemaps();
             }
 
             // if no sitemaps add known sitemaps
-            if ( $sitemaps === [] ) {
+            if ($sitemaps === []) {
                 $sitemaps = [
                     // we're assigning empty arrays to match sitemaps library
                     '/sitemap.xml' => [], // normal sitemap
@@ -89,40 +92,42 @@ class DetectSitemapsURLs {
                 ];
             }
 
-            foreach ( array_keys( $sitemaps ) as $sitemap ) {
-                if ( ! is_string( $sitemap ) ) {
+            foreach (array_keys($sitemaps) as $sitemap) {
+                if (! is_string($sitemap)) {
                     continue;
                 }
 
-                $request = new Request( 'GET', $sitemap, $headers );
+                $request = new Request('GET', $sitemap, $headers);
 
-                $response = $client->send( $request );
+                $response = $client->send($request);
 
                 $status_code = $response->getStatusCode();
 
-                if ( $status_code === 200 ) {
-                    $parser->parse( $wp_site_url . $sitemap );
+                if ($status_code !== 200) {
+                    continue;
+                }
 
+                $parser->parse($wp_site_url . $sitemap);
+
+                $sitemaps_urls[] = '/' . str_replace(
+                    $wp_site_url,
+                    '',
+                    $sitemap
+                );
+
+                $extract_sitemaps = $parser->getSitemaps();
+
+                foreach ($extract_sitemaps as $url => $tags) {
                     $sitemaps_urls[] = '/' . str_replace(
                         $wp_site_url,
                         '',
-                        $sitemap
+                        $url
                     );
-
-                    $extract_sitemaps = $parser->getSitemaps();
-
-                    foreach ( $extract_sitemaps as $url => $tags ) {
-                        $sitemaps_urls[] = '/' . str_replace(
-                            $wp_site_url,
-                            '',
-                            $url
-                        );
-                    }
                 }
             }
-        } catch ( WordPressURLDetectorException $e ) {
-            WsLog::l( $e->getMessage() );
-            throw new WordPressURLDetectorException( $e->getMessage(), 0, $e );
+        } catch (\WordPressURLDetector\WordPressURLDetectorException $e) {
+            WsLog::l($e->getMessage());
+            throw new \WordPressURLDetector\WordPressURLDetectorException($e->getMessage(), 0, $e);
         }
 
         return $sitemaps_urls;

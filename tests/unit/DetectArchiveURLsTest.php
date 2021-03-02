@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use PHPUnit\Framework\TestCase;
-use WP_Mock;
+final class DetectArchiveURLsTest extends \PHPUnit\Framework\TestCase
+{
 
-final class DetectArchiveURLsTest extends TestCase {
-
-
-    public function testDetect() {
+    public function testDetect()
+    {
         $site_url = 'https://foo.com/';
 
         \WP_Mock::userFunction(
@@ -80,6 +80,6 @@ final class DetectArchiveURLsTest extends TestCase {
             "{$site_url}archives/2020/08/15/",
         ];
         $actual = DetectArchiveURLs::detect();
-        $this->assertEquals( $expected, $actual );
+        $this->assertEquals($expected, $actual);
     }
 }

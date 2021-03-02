@@ -1,51 +1,57 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use RecursiveIteratorIterator;
-use RecursiveArrayIterator;
 use RecursiveDirectoryIterator;
 
-class FilesHelper {
+class FilesHelper
+{
 
     /**
      * Recursively delete a directory
      *
-     * @throws WordPressURLDetectorException
+     * @throws \WordPressURLDetector\WordPressURLDetectorException
      */
-    public static function deleteDirWithFiles( string $dir ) : void {
-        if ( is_dir( $dir ) ) {
-            $dir_files = scandir( $dir );
-
-            if ( ! $dir_files ) {
-                $err = 'Trying to delete nonexistant dir: ' . $dir;
-                WsLog::l( $err );
-                throw new WordPressURLDetectorException( $err );
-            }
-
-            $files = array_diff( $dir_files, [ '.', '..' ] );
-
-            foreach ( $files as $file ) {
-                ( is_dir( "$dir/$file" ) ) ?
-                self::deleteDirWithFiles( "$dir/$file" ) :
-                unlink( "$dir/$file" );
-            }
-
-            rmdir( $dir );
+    public static function deleteDirWithFiles( string $dir ): void
+    {
+        if (!is_dir($dir)) {
+            return;
         }
+
+        $dir_files = scandir($dir);
+
+        if (! $dir_files) {
+            $err = 'Trying to delete nonexistant dir: ' . $dir;
+            WsLog::l($err);
+            throw new \WordPressURLDetector\WordPressURLDetectorException($err);
+        }
+
+        $files = array_diff($dir_files, [ '.', '..' ]);
+
+        foreach ($files as $file) {
+            ( is_dir("$dir/$file") ) ?
+            self::deleteDirWithFiles("$dir/$file") :
+            unlink("$dir/$file");
+        }
+
+        rmdir($dir);
     }
 
     /**
      * Get public URLs for all files in a local directory.
      *
-     * @return string[] list of relative, urlencoded URLs
+     * @return array<string> list of relative, urlencoded URLs
      */
-    public static function getListOfLocalFilesByDir( string $dir ) : array {
+    public static function getListOfLocalFilesByDir( string $dir ): array
+    {
         $files = [];
 
-        $site_path = SiteInfo::getPath( 'site' );
+        $site_path = SiteInfo::getPath('site');
 
-        if ( is_dir( $dir ) ) {
+        if (is_dir($dir)) {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator(
                     $dir,
@@ -53,18 +59,24 @@ class FilesHelper {
                 )
             );
 
-            foreach ( $iterator as $filename => $file_object ) {
-                $path_crawlable = self::filePathLooksCrawlable( $filename );
+            foreach ($iterator as $filename => $file_object) {
+                $path_crawlable = self::filePathLooksCrawlable($filename);
 
-                if ( $path_crawlable ) {
-                    if ( is_string( $site_path ) ) {
-                        $url = str_replace( $site_path, '/', $filename );
-
-                        if ( is_string( $url ) ) {
-                            $files[] = $url;
-                        }
-                    }
+                if (!$path_crawlable) {
+                    continue;
                 }
+
+                if (!is_string($site_path)) {
+                    continue;
+                }
+
+                $url = str_replace($site_path, '/', $filename);
+
+                if (!is_string($url)) {
+                    continue;
+                }
+
+                $files[] = $url;
             }
         }
 
@@ -77,7 +89,8 @@ class FilesHelper {
      * @return bool  True if the given file does not have a disallowed filename
      *               or extension.
      */
-    public static function filePathLooksCrawlable( string $file_name ) : bool {
+    public static function filePathLooksCrawlable( string $file_name ): bool
+    {
         $filenames_to_ignore = [
             '__MACOSX',
             '.babelrc',
@@ -130,10 +143,10 @@ class FilesHelper {
 
         $filename_matches = 0;
 
-        str_ireplace( $filenames_to_ignore, '', $file_name, $filename_matches );
+        str_ireplace($filenames_to_ignore, '', $file_name, $filename_matches);
 
         // If we found matches we don't need to go any further
-        if ( $filename_matches ) {
+        if ($filename_matches) {
             return false;
         }
 
@@ -177,8 +190,8 @@ class FilesHelper {
           - Add $ at the end to match end of string
           - Add i modifier for case insensitivity
         */
-        foreach ( $file_extensions_to_ignore as $extension ) {
-            if ( preg_match( "/\\{$extension}$/i", $file_name ) ) {
+        foreach ($file_extensions_to_ignore as $extension) {
+            if (preg_match("/\\{$extension}$/i", $file_name)) {
                 return false;
             }
         }
@@ -190,23 +203,24 @@ class FilesHelper {
      * Clean all detected URLs before use. Accepts relative and absolute URLs
      * both with and without starting or trailing slashes.
      *
-     * @param string[] $urls list of absolute or relative URLs
-     * @return string[]|null[] list of relative URLs
-     * @throws WordPressURLDetectorException
+     * @param array<string> $urls list of absolute or relative URLs
+     * @return array<string>|array<null> list of relative URLs
+     * @throws \WordPressURLDetector\WordPressURLDetectorException
      */
-    public static function cleanDetectedURLs( array $urls ) : array {
-        $home_url = SiteInfo::getUrl( 'home' );
+    public static function cleanDetectedURLs( array $urls ): array
+    {
+        $home_url = SiteInfo::getUrl('home');
 
-        if ( ! is_string( $home_url ) ) {
+        if (! is_string($home_url)) {
             $err = 'Home URL not defined ';
-            WsLog::l( $err );
-            throw new WordPressURLDetectorException( $err );
+            WsLog::l($err);
+            throw new \WordPressURLDetector\WordPressURLDetectorException($err);
         }
 
         $cleaned_urls = array_map(
             // trim hashes/query strings
-            function ( $url ) use ( $home_url ) {
-                if ( ! $url ) {
+            static function ( $url ) use ( $home_url ) {
+                if (! $url) {
                     return;
                 }
 
@@ -224,19 +238,19 @@ class FilesHelper {
                     $url
                 );
 
-                if ( ! is_string( $url ) ) {
+                if (! is_string($url)) {
                     return;
                 }
 
-                $url = strtok( $url, '#' );
+                $url = strtok($url, '#');
 
-                if ( ! $url ) {
+                if (! $url) {
                     return;
                 }
 
-                $url = strtok( $url, '?' );
+                $url = strtok($url, '?');
 
-                if ( ! $url ) {
+                if (! $url) {
                     return;
                 }
 
@@ -245,9 +259,9 @@ class FilesHelper {
             $urls
         );
 
-        if ( empty( $cleaned_urls ) ) {
+        if (empty($cleaned_urls)) {
             $err = 'No valid URLs left after cleaning';
-            WsLog::l( $err );
+            WsLog::l($err);
             return [];
         }
 

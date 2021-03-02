@@ -1,33 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use PHPUnit\Framework\TestCase;
-
-class SitemapDownloadTest extends TestCase {
+class SitemapDownloadTest extends \PHPUnit\Framework\TestCase
+{
 
     /**
      * @dataProvider generateDataForTest
      * @param string $url URL
      */
-    public function testDownload( $url ) {
-        $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WordPressURLDetector\SitemapParser', $parser );
-        $parser->parse( $url );
-        $this->assertTrue( is_array( $parser->getSitemaps() ) );
-        $this->assertTrue( is_array( $parser->getURLs() ) );
-        $this->assertTrue( count( $parser->getSitemaps() ) > 0 || count( $parser->getURLs() ) > 0 );
-        foreach ( $parser->getSitemaps() as $url => $tags ) {
-            $this->assertTrue( is_string( $url ) );
-            $this->assertTrue( is_array( $tags ) );
-            $this->assertTrue( $url === $tags['loc'] );
-            $this->assertNotFalse( filter_var( $url, FILTER_VALIDATE_URL ) );
+    public function testDownload( $url )
+    {
+        $parser = new SitemapParser('SitemapParser');
+        $this->assertInstanceOf('WordPressURLDetector\SitemapParser', $parser);
+        $parser->parse($url);
+        $this->assertTrue(is_array($parser->getSitemaps()));
+        $this->assertTrue(is_array($parser->getURLs()));
+        $this->assertTrue(count($parser->getSitemaps()) > 0 || count($parser->getURLs()) > 0);
+        foreach ($parser->getSitemaps() as $url => $tags) {
+            $this->assertTrue(is_string($url));
+            $this->assertTrue(is_array($tags));
+            $this->assertTrue($url === $tags['loc']);
+            $this->assertNotFalse(filter_var($url, FILTER_VALIDATE_URL));
         }
-        foreach ( $parser->getURLs() as $url => $tags ) {
-            $this->assertTrue( is_string( $url ) );
-            $this->assertTrue( is_array( $tags ) );
-            $this->assertTrue( $url === $tags['loc'] );
-            $this->assertNotFalse( filter_var( $url, FILTER_VALIDATE_URL ) );
+        foreach ($parser->getURLs() as $url => $tags) {
+            $this->assertTrue(is_string($url));
+            $this->assertTrue(is_array($tags));
+            $this->assertTrue($url === $tags['loc']);
+            $this->assertNotFalse(filter_var($url, FILTER_VALIDATE_URL));
         }
     }
 
@@ -36,7 +38,8 @@ class SitemapDownloadTest extends TestCase {
      *
      * @return array
      */
-    public function generateDataForTest() {
+    public function generateDataForTest()
+    {
         return [
             [
                 'http://www.google.com/sitemap.xml',

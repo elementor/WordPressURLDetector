@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-class DetectCustomPostTypeURLs {
+class DetectCustomPostTypeURLs
+{
 
     /**
      * Detect Custom Post Type URLs
      *
-     * @return string[] list of URLs
+     * @return array<string> list of URLs
      */
-    public static function detect() : array {
+    public static function detect(): array
+    {
         global $wpdb;
 
         $post_urls = [];
@@ -21,14 +25,14 @@ class DetectCustomPostTypeURLs {
             AND post_type NOT IN ('revision','nav_menu_item')"
         );
 
-        foreach ( $post_ids as $post_id ) {
-            $permalink = get_post_permalink( $post_id );
+        foreach ($post_ids as $post_id) {
+            $permalink = get_post_permalink($post_id);
 
-            if ( ! is_string( $permalink ) ) {
+            if (! is_string($permalink)) {
                 continue;
             }
 
-            if ( strpos( $permalink, '?post_type' ) !== false ) {
+            if (strpos($permalink, '?post_type') !== false) {
                 continue;
             }
 

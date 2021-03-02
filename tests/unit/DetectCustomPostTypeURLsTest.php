@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use WP_Mock;
 
-final class DetectCustomPostTypeURLsTest extends TestCase {
+final class DetectCustomPostTypeURLsTest extends \PHPUnit\Framework\TestCase
+{
 
-
-    public function testDetect() {
+    public function testDetect()
+    {
         global $wpdb;
         $site_url = 'https://foo.com/';
 
         // Create 3 attachments
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wpdb = Mockery::mock( '\WPDB' );
-        $wpdb->shouldReceive( 'get_col' )
+        $wpdb = Mockery::mock('\WPDB');
+        $wpdb->shouldReceive('get_col')
             ->once()
-            ->andReturn( [ 1, 2, 3 ] );
+            ->andReturn([ 1, 2, 3 ]);
         $wpdb->posts = 'wp_posts';
 
         // And URLs for them
@@ -53,6 +54,6 @@ final class DetectCustomPostTypeURLsTest extends TestCase {
             "{$site_url}2020/10/08/bar/",
         ];
         $actual = DetectCustomPostTypeURLs::detect();
-        $this->assertEquals( $expected, $actual );
+        $this->assertEquals($expected, $actual);
     }
 }

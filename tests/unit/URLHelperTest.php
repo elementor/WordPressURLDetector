@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use PHPUnit\Framework\TestCase;
-
-final class URLHelperTest extends TestCase {
-
+final class URLHelperTest extends \PHPUnit\Framework\TestCase
+{
 
     /**
      * @dataProvider protocolRelativeURLProvider
      */
-    public function testgetProtocolRelativeURL( $url, $expectation ) {
-        $protocol_relative_url = URLHelper::getProtocolRelativeURL( $url );
+    public function testgetProtocolRelativeURL( $url, $expectation )
+    {
+        $protocol_relative_url = URLHelper::getProtocolRelativeURL($url);
 
         $this->assertEquals(
             $expectation,
@@ -19,7 +20,8 @@ final class URLHelperTest extends TestCase {
         );
     }
 
-    public function protocolRelativeURLProvider() {
+    public function protocolRelativeURLProvider()
+    {
         return [
             'http link becomes protocol relative' => [
                 'http://myplaceholderdomain.com/some-post/',
@@ -51,14 +53,16 @@ final class URLHelperTest extends TestCase {
     /**
      * @dataProvider startsWithHashProvider
      */
-    public function teststartsWithHash( $url, $expectation ) {
+    public function teststartsWithHash( $url, $expectation )
+    {
         $this->assertEquals(
             $expectation,
-            URLHelper::startsWithHash( $url )
+            URLHelper::startsWithHash($url)
         );
     }
 
-    public function startsWithHashProvider() {
+    public function startsWithHashProvider()
+    {
         return [
             'doc relative url starting with hash returns true' => [
                 '#somehash',
@@ -74,14 +78,16 @@ final class URLHelperTest extends TestCase {
     /**
      * @dataProvider isMailtoProvider
      */
-    public function testisMailto( $url, $expectation ) {
+    public function testisMailto( $url, $expectation )
+    {
         $this->assertEquals(
             $expectation,
-            URLHelper::isMailto( $url )
+            URLHelper::isMailto($url)
         );
     }
 
-    public function isMailtoProvider() {
+    public function isMailtoProvider()
+    {
         return [
             'doc relative url starting with mailto returns true' => [
                 'mailto:leon@wp2static.com',
@@ -97,14 +103,16 @@ final class URLHelperTest extends TestCase {
     /**
      * @dataProvider isProtocolRelativeProvider
      */
-    public function testisProtocolRelative( $url, $expectation ) {
+    public function testisProtocolRelative( $url, $expectation )
+    {
         $this->assertEquals(
             $expectation,
-            URLHelper::isProtocolRelative( $url )
+            URLHelper::isProtocolRelative($url)
         );
     }
 
-    public function isProtocolRelativeProvider() {
+    public function isProtocolRelativeProvider()
+    {
         return [
             'protocol relative URL returns true' => [
                 '//mydomain.com/animage.jpg',
@@ -125,7 +133,7 @@ final class URLHelperTest extends TestCase {
         $site_url,
         $expectation
     ) {
-        $url = URLHelper::protocolRelativeToAbsoluteURL( $url, $site_url );
+        $url = URLHelper::protocolRelativeToAbsoluteURL($url, $site_url);
 
         $this->assertEquals(
             $expectation,
@@ -133,7 +141,8 @@ final class URLHelperTest extends TestCase {
         );
     }
 
-    public function protocolRelativeToAbsoluteURLProvider() {
+    public function protocolRelativeToAbsoluteURLProvider()
+    {
         return [
             'same domain host returns abs url' => [
                 '//mydomain.com/animage.jpg',
@@ -158,11 +167,12 @@ final class URLHelperTest extends TestCase {
     ) {
         $this->assertEquals(
             $expectation,
-            URLHelper::isInternalLink( $url, $site_url_host )
+            URLHelper::isInternalLink($url, $site_url_host)
         );
     }
 
-    public function isInternalLinkProvider() {
+    public function isInternalLinkProvider()
+    {
         return [
             'first char /, 2nd char other is site root rel internal link' => [
                 '/somelink',

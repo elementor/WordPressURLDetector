@@ -1,32 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
-class DetectThemeAssets {
+class DetectThemeAssets
+{
 
     /**
      * Detect theme public URLs from filesystem
      *
-     * @return string[] list of URLs
+     * @return array<string> list of URLs
      */
-    public static function detect( string $theme_type ) : array {
+    public static function detect( string $theme_type ): array
+    {
         $files = [];
         $template_path = '';
         $template_url = '';
-        $site_path = SiteInfo::getPath( 'site' );
+        $site_path = SiteInfo::getPath('site');
 
-        if ( $theme_type === 'parent' ) {
-            $template_path = SiteInfo::getPath( 'parent_theme' );
-            $template_url = SiteInfo::getUrl( 'parent_theme' );
+        if ($theme_type === 'parent') {
+            $template_path = SiteInfo::getPath('parent_theme');
+            $template_url = SiteInfo::getUrl('parent_theme');
         } else {
-            $template_path = SiteInfo::getPath( 'child_theme' );
-            $template_url = SiteInfo::getUrl( 'child_theme' );
+            $template_path = SiteInfo::getPath('child_theme');
+            $template_url = SiteInfo::getUrl('child_theme');
         }
 
-        if ( is_dir( $template_path ) ) {
+        if (is_dir($template_path)) {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator(
                     $template_path,
@@ -34,12 +38,12 @@ class DetectThemeAssets {
                 )
             );
 
-            foreach ( $iterator as $filename => $file_object ) {
+            foreach ($iterator as $filename => $file_object) {
                 $path_crawlable =
-                    FilesHelper::filePathLooksCrawlable( $filename );
+                    FilesHelper::filePathLooksCrawlable($filename);
 
                 // Standardise all paths to use / (Windows support)
-                $filename = str_replace( '\\', '/', $filename );
+                $filename = str_replace('\\', '/', $filename);
 
                 $detected_filename =
                     str_replace(
@@ -48,14 +52,18 @@ class DetectThemeAssets {
                         $filename
                     );
 
-                if ( $path_crawlable ) {
-                    if ( is_string( $detected_filename ) ) {
-                        array_push(
-                            $files,
-                            $detected_filename
-                        );
-                    }
+                if (!$path_crawlable) {
+                    continue;
                 }
+
+                if (!is_string($detected_filename)) {
+                    continue;
+                }
+
+                array_push(
+                    $files,
+                    $detected_filename
+                );
             }
         }
 

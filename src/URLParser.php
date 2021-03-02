@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-trait URLParser {
+trait URLParser
+{
 
     /**
      * URL encoder according to RFC 3986
@@ -17,7 +20,8 @@ trait URLParser {
      * @param string $url
      * @return string
      */
-    protected function urlEncode( $url ) {
+    protected function urlEncode( $url )
+    {
         $reserved = [
             ':' => '!%3A!ui',
             '/' => '!%2F!ui',
@@ -39,10 +43,10 @@ trait URLParser {
             '=' => '!%3D!ui',
             '%' => '!%25!ui',
         ];
-        return (string) preg_replace(
-            array_values( $reserved ),
-            array_keys( $reserved ),
-            rawurlencode( $url )
+        return (string)preg_replace(
+            array_values($reserved),
+            array_keys($reserved),
+            rawurlencode($url)
         );
     }
 
@@ -52,15 +56,15 @@ trait URLParser {
      * @param string $url
      * @return bool
      */
-    protected function urlValidate( $url ) {
-        return (
-            filter_var( $url, FILTER_VALIDATE_URL ) &&
-            ( $parsed = parse_url( $url ) ) !== false &&
-            isset( $parsed['host'] ) &&
-            isset( $parsed['scheme'] ) &&
-            $this->urlValidateHost( $parsed['host'] ) &&
-            $this->urlValidateScheme( $parsed['scheme'] )
-        );
+    protected function urlValidate( $url )
+    {
+        return
+            filter_var($url, FILTER_VALIDATE_URL) &&
+            ( $parsed = parse_url($url) ) !== false &&
+            isset($parsed['host']) &&
+            isset($parsed['scheme']) &&
+            $this->urlValidateHost($parsed['host']) &&
+            $this->urlValidateScheme($parsed['scheme']);
     }
 
     /**
@@ -71,18 +75,18 @@ trait URLParser {
      * @param  string $host
      * @return bool
      */
-    protected static function urlValidateHost( $host ) {
-        return (
+    protected static function urlValidateHost( $host )
+    {
+        return
             // valid chars check
             preg_match(
                 '/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i',
                 $host
             )
             // overall length check
-            && preg_match( '/^.{1,253}$/', $host )
+            && preg_match('/^.{1,253}$/', $host)
             // length of each label
-            && preg_match( '/^[^\.]{1,63}(\.[^\.]{1,63})*$/', $host )
-        );
+            && preg_match('/^[^\.]{1,63}(\.[^\.]{1,63})*$/', $host);
     }
 
     /**
@@ -91,7 +95,8 @@ trait URLParser {
      * @param  string $scheme
      * @return bool
      */
-    protected static function urlValidateScheme( $scheme ) {
+    protected static function urlValidateScheme( $scheme )
+    {
         return in_array(
             $scheme,
             [

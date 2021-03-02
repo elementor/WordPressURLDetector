@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-class DetectPostURLs {
+class DetectPostURLs
+{
 
     /**
      * Detect Post URLs
      *
-     * @return string[] list of URLs
+     * @return array<string> list of URLs
      */
-    public static function detect() : array {
+    public static function detect(): array
+    {
         global $wpdb;
 
         $post_urls = [];
@@ -21,14 +25,14 @@ class DetectPostURLs {
             AND post_type = 'post'"
         );
 
-        foreach ( $post_ids as $post_id ) {
-            $permalink = get_permalink( $post_id );
+        foreach ($post_ids as $post_id) {
+            $permalink = get_permalink($post_id);
 
-            if ( ! $permalink ) {
+            if (! $permalink) {
                 continue;
             }
 
-            if ( strpos( $permalink, '?post_type' ) !== false ) {
+            if (strpos($permalink, '?post_type') !== false) {
                 continue;
             }
 

@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use PHPUnit\Framework\TestCase;
-
-class SitemapInvalidURLTest extends TestCase {
+class SitemapInvalidURLTest extends \PHPUnit\Framework\TestCase
+{
 
     /**
      * @dataProvider generateDataForTest
      * @param string $url URL
      */
-    public function testInvalidURL( $url ) {
-        $this->expectException( 'WordPressURLDetector\WordPressURLDetectorException' );
-        $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WordPressURLDetector\SitemapParser', $parser );
-        $parser->parse( $url );
+    public function testInvalidURL( $url )
+    {
+        $this->expectException('WordPressURLDetector\WordPressURLDetectorException');
+        $parser = new SitemapParser('SitemapParser');
+        $this->assertInstanceOf('WordPressURLDetector\SitemapParser', $parser);
+        $parser->parse($url);
     }
 
     /**
@@ -22,7 +24,8 @@ class SitemapInvalidURLTest extends TestCase {
      *
      * @return array
      */
-    public function generateDataForTest() {
+    public function generateDataForTest()
+    {
         return [
             [
                 'htt://www.example.c/',

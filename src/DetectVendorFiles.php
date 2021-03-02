@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 /**
@@ -7,23 +9,25 @@ namespace WordPressURLDetector;
  *
  * @package WordPressURLDetector
  */
-class DetectVendorFiles {
+class DetectVendorFiles
+{
 
     /**
      * Detect vendor URLs from filesystem
      *
-     * @return string[] list of URLs
+     * @return array<string> list of URLs
      */
-    public static function detect( string $wp_site_url ) : array {
+    public static function detect( string $wp_site_url ): array
+    {
         $vendor_files = [];
 
         // cache dir used by Autoptimize and other themes/plugins
         $vendor_cache_dir =
-            SiteInfo::getPath( 'content' ) . 'cache/';
+            SiteInfo::getPath('content') . 'cache/';
 
-        if ( is_dir( $vendor_cache_dir ) ) {
-            $site_url = SiteInfo::getUrl( 'site' );
-            $content_url = SiteInfo::getUrl( 'content' );
+        if (is_dir($vendor_cache_dir)) {
+            $site_url = SiteInfo::getUrl('site');
+            $content_url = SiteInfo::getUrl('content');
 
             // get difference between home and wp-contents URL
             $prefix = str_replace(
@@ -34,14 +38,14 @@ class DetectVendorFiles {
 
             $vendor_cache_urls = DetectVendorCache::detect(
                 $vendor_cache_dir,
-                SiteInfo::getPath( 'content' ),
+                SiteInfo::getPath('content'),
                 $prefix
             );
 
-            $vendor_files = array_merge( $vendor_files, $vendor_cache_urls );
+            $vendor_files = array_merge($vendor_files, $vendor_cache_urls);
         }
 
-        if ( class_exists( 'Custom_Permalinks' ) ) {
+        if (class_exists('Custom_Permalinks')) {
             global $wpdb;
 
             $query = "
@@ -60,8 +64,8 @@ class DetectVendorFiles {
                 )
             );
 
-            if ( $posts ) {
-                foreach ( $posts as $post ) {
+            if ($posts) {
+                foreach ($posts as $post) {
                     $custom_permalinks[] = $wp_site_url . $post->meta_value;
                 }
 

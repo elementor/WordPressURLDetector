@@ -1,28 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use WP_Mock;
 
-final class DetectPageURLsTest extends TestCase {
+final class DetectPageURLsTest extends \PHPUnit\Framework\TestCase
+{
 
-
-    public function testDetect() {
+    public function testDetect()
+    {
         global $wpdb;
         $site_url = 'https://foo.com/';
 
         // Create 3 attachments
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wpdb = Mockery::mock( '\WPDB' );
-        $wpdb->shouldReceive( 'get_col' )
+        $wpdb = Mockery::mock('\WPDB');
+        $wpdb->shouldReceive('get_col')
             ->once()
-            ->andReturn( [ 1, 2, 3 ] );
+            ->andReturn([ 1, 2, 3 ]);
         $wpdb->posts = 'wp_posts';
 
         // And URLs for them
-        for ( $i = 1; $i <= 3; $i++ ) {
+        for ($i = 1; $i <= 3; $i++) {
             \WP_Mock::userFunction(
                 'get_page_link',
                 [
@@ -39,6 +40,6 @@ final class DetectPageURLsTest extends TestCase {
             "{$site_url}page/3/",
         ];
         $actual = DetectPageURLs::detect();
-        $this->assertEquals( $expected, $actual );
+        $this->assertEquals($expected, $actual);
     }
 }

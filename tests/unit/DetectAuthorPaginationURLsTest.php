@@ -1,21 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use Mockery;
-use PHPUnit\Framework\TestCase;
-use WP_Mock;
+final class DetectAuthorPaginationURLsTest extends \PHPUnit\Framework\TestCase
+{
 
-final class DetectAuthorPaginationURLsTest extends TestCase {
-
-
-    public function testDetect() {
+    public function testDetect()
+    {
         $site_url = 'https://foo.com/';
 
         // Set the WordPress pagination base
         global $wp_rewrite;
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wp_rewrite = (object) [ 'pagination_base' => '/page' ];
+        $wp_rewrite = (object)[ 'pagination_base' => '/page' ];
 
         // Set pagination to 3 posts per page
         \WP_Mock::userFunction(
@@ -29,9 +28,9 @@ final class DetectAuthorPaginationURLsTest extends TestCase {
         $users = [];
 
         // Create some virtual users
-        for ( $i = 1; $i <= 3; $i++ ) {
+        for ($i = 1; $i <= 3; $i++) {
             // Add the user
-            $users[] = (object) [ 'ID' => $i ];
+            $users[] = (object)[ 'ID' => $i ];
 
             // Create an author URL for this user
             \WP_Mock::userFunction(
@@ -54,7 +53,7 @@ final class DetectAuthorPaginationURLsTest extends TestCase {
         }
 
         // create user missing author URL
-        $users[] = (object) [ 'ID' => 4 ];
+        $users[] = (object)[ 'ID' => 4 ];
         \WP_Mock::userFunction(
             'get_author_posts_url',
             [
@@ -95,7 +94,7 @@ final class DetectAuthorPaginationURLsTest extends TestCase {
             '/users/3/page/4/',
         ];
 
-        $actual = DetectAuthorPaginationURLs::detect( $site_url );
-        $this->assertEquals( $expected, $actual );
+        $actual = DetectAuthorPaginationURLs::detect($site_url);
+        $this->assertEquals($expected, $actual);
     }
 }

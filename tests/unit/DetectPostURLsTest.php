@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use WP_Mock;
 
-final class DetectPostURLsTest extends TestCase {
+final class DetectPostURLsTest extends \PHPUnit\Framework\TestCase
+{
 
-
-    public function testDetect() {
+    public function testDetect()
+    {
         global $wpdb;
         $site_url = 'https://foo.com/';
 
         // Create 3 attachments
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wpdb = Mockery::mock( '\WPDB' );
-        $wpdb->shouldReceive( 'get_col' )
+        $wpdb = Mockery::mock('\WPDB');
+        $wpdb->shouldReceive('get_col')
             ->once()
-            ->andReturn( [ 1, 2, 3, 4, 5 ] );
+            ->andReturn([ 1, 2, 3, 4, 5 ]);
         $wpdb->posts = 'wp_posts';
 
         // Mock the methods and functions used by DetectPostURLs
@@ -68,11 +69,12 @@ final class DetectPostURLsTest extends TestCase {
             'https://foo.com/2020/08/2',
             'https://foo.com/2020/08/3',
         ];
-        $actual = DetectPostURLs::detect( '%year%/%month%/%day%' );
-        $this->assertEquals( $expected, $actual );
+        $actual = DetectPostURLs::detect('%year%/%month%/%day%');
+        $this->assertEquals($expected, $actual);
     }
 
-    public function get_permalink( int $post_id, string $permalink ) : string {
+    public function get_permalink( int $post_id, string $permalink ): string
+    {
         return "https://foo.com/2020/08/{$post_id}";
     }
 }

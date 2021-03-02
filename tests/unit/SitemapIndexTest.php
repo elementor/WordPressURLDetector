@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use PHPUnit\Framework\TestCase;
-
-class SitemapIndexTest extends TestCase {
+class SitemapIndexTest extends \PHPUnit\Framework\TestCase
+{
 
     /**
      * @dataProvider generateDataForTest
@@ -12,12 +13,13 @@ class SitemapIndexTest extends TestCase {
      * @param string $body URL body content
      * @param array $result Test result to match
      */
-    public function testSitemapIndex( $url, $body, $result ) {
-        $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WordPressURLDetector\SitemapParser', $parser );
-        $parser->parse( $url, $body );
-        $this->assertEquals( $result, $parser->getSitemaps() );
-        $this->assertEquals( [], $parser->getURLs() );
+    public function testSitemapIndex( $url, $body, $result )
+    {
+        $parser = new SitemapParser('SitemapParser');
+        $this->assertInstanceOf('WordPressURLDetector\SitemapParser', $parser);
+        $parser->parse($url, $body);
+        $this->assertEquals($result, $parser->getSitemaps());
+        $this->assertEquals([], $parser->getURLs());
     }
 
     /**
@@ -25,11 +27,12 @@ class SitemapIndexTest extends TestCase {
      *
      * @return array
      */
-    public function generateDataForTest() {
+    public function generateDataForTest()
+    {
         return [
             [
                 'http://www.example.com/sitemap.xml',
-                <<<XMLSITEMAP
+                <<<'XMLSITEMAP'
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>

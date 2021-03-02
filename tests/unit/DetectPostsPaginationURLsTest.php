@@ -1,26 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use WP_Mock;
 
-final class DetectPostsPaginationURLsTest extends TestCase {
+final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
+{
 
-
-    public function testDetectWithoutPostsPage() {
+    public function testDetectWithoutPostsPage()
+    {
         global $wpdb;
         // Set the WordPress pagination base
         global $wp_rewrite;
         $site_url = 'https://foo.com/';
 
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wp_rewrite = (object) [ 'pagination_base' => 'page' ];
+        $wp_rewrite = (object)[ 'pagination_base' => 'page' ];
 
         // Create 3 post objects
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wpdb = Mockery::mock( '\WPDB' );
+        $wpdb = Mockery::mock('\WPDB');
         // set table name
         $wpdb->posts = 'wp_posts';
         $query_string = "
@@ -30,40 +31,40 @@ final class DetectPostsPaginationURLsTest extends TestCase {
             AND post_type NOT IN ('revision','nav_menu_item')";
 
         $posts = [
-            (object) [
+            (object)[
                 'ID' => '1',
                 'post_type' => 'post',
             ],
-            (object) [
+            (object)[
                 'ID' => '2',
                 'post_type' => 'page',
             ],
-            (object) [
+            (object)[
                 'ID' => '3',
                 'post_type' => 'attachment',
             ],
-            (object) [
+            (object)[
                 'ID' => '4',
                 'post_type' => 'mycustomtype',
             ],
-            (object) [
+            (object)[
                 'ID' => '5',
                 'post_type' => 'nonexistant',
             ],
-            (object) [
+            (object)[
                 'ID' => '6',
                 'post_type' => 'noobjecttype',
             ],
-            (object) [
+            (object)[
                 'ID' => '7',
                 'post_type' => 'spacednametype',
             ],
         ];
 
-        $wpdb->shouldReceive( 'get_results' )
-            ->with( $query_string )
+        $wpdb->shouldReceive('get_results')
+            ->with($query_string)
             ->once()
-            ->andReturn( $posts );
+            ->andReturn($posts);
 
         // Set pagination to 3 posts per page
         \WP_Mock::userFunction(
@@ -78,12 +79,12 @@ final class DetectPostsPaginationURLsTest extends TestCase {
         $posts_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
             " post_status = 'publish' AND post_type = 'post'";
 
-        $wpdb->shouldReceive( 'get_var' )
-            ->with( $posts_query )
+        $wpdb->shouldReceive('get_var')
+            ->with($posts_query)
             ->once()
-            ->andReturn( 15 );
+            ->andReturn(15);
 
-        $post_type_object = (object) [ 'labels' => [ 'name' => 'Posts' ] ];
+        $post_type_object = (object)[ 'labels' => [ 'name' => 'Posts' ] ];
 
         \WP_Mock::userFunction(
             'get_post_type_object',
@@ -106,12 +107,12 @@ final class DetectPostsPaginationURLsTest extends TestCase {
         $pages_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
             " post_status = 'publish' AND post_type = 'page'";
 
-        $wpdb->shouldReceive( 'get_var' )
-            ->with( $pages_query )
+        $wpdb->shouldReceive('get_var')
+            ->with($pages_query)
             ->once()
-            ->andReturn( 9 );
+            ->andReturn(9);
 
-        $page_type_object = (object) [ 'labels' => [ 'name' => 'Pages' ] ];
+        $page_type_object = (object)[ 'labels' => [ 'name' => 'Pages' ] ];
 
         \WP_Mock::userFunction(
             'get_post_type_object',
@@ -125,12 +126,12 @@ final class DetectPostsPaginationURLsTest extends TestCase {
         $attachments_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
             " post_status = 'publish' AND post_type = 'attachment'";
 
-        $wpdb->shouldReceive( 'get_var' )
-            ->with( $attachments_query )
+        $wpdb->shouldReceive('get_var')
+            ->with($attachments_query)
             ->once()
-            ->andReturn( 13 );
+            ->andReturn(13);
 
-        $attachment_type_object = (object) [ 'labels' => [ 'name' => 'Attachments' ] ];
+        $attachment_type_object = (object)[ 'labels' => [ 'name' => 'Attachments' ] ];
 
         \WP_Mock::userFunction(
             'get_post_type_object',
@@ -144,12 +145,12 @@ final class DetectPostsPaginationURLsTest extends TestCase {
         $custom_type_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
             " post_status = 'publish' AND post_type = 'mycustomtype'";
 
-        $wpdb->shouldReceive( 'get_var' )
-            ->with( $custom_type_query )
+        $wpdb->shouldReceive('get_var')
+            ->with($custom_type_query)
             ->once()
-            ->andReturn( 21 );
+            ->andReturn(21);
 
-        $custom_type_object = (object) [ 'labels' => [ 'name' => 'MyCustomType' ] ];
+        $custom_type_object = (object)[ 'labels' => [ 'name' => 'MyCustomType' ] ];
 
         \WP_Mock::userFunction(
             'get_post_type_object',
@@ -163,18 +164,18 @@ final class DetectPostsPaginationURLsTest extends TestCase {
         $type_without_posts_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
             " post_status = 'publish' AND post_type = 'nonexistant'";
 
-        $wpdb->shouldReceive( 'get_var' )
-            ->with( $type_without_posts_query )
+        $wpdb->shouldReceive('get_var')
+            ->with($type_without_posts_query)
             ->once()
-            ->andReturn( null );
+            ->andReturn(null);
 
         $type_not_returning_object_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
             " post_status = 'publish' AND post_type = 'noobjecttype'";
 
-        $wpdb->shouldReceive( 'get_var' )
-            ->with( $type_not_returning_object_query )
+        $wpdb->shouldReceive('get_var')
+            ->with($type_not_returning_object_query)
             ->once()
-            ->andReturn( 1 );
+            ->andReturn(1);
 
         \WP_Mock::userFunction(
             'get_post_type_object',
@@ -188,13 +189,13 @@ final class DetectPostsPaginationURLsTest extends TestCase {
         $type_with_spaced_name = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
             " post_status = 'publish' AND post_type = 'spacednametype'";
 
-        $wpdb->shouldReceive( 'get_var' )
-            ->with( $type_with_spaced_name )
+        $wpdb->shouldReceive('get_var')
+            ->with($type_with_spaced_name)
             ->once()
-            ->andReturn( 1 );
+            ->andReturn(1);
 
         $spaced_name_type_object =
-            (object) [ 'labels' => [ 'name' => 'Type With Spaces In Name' ] ];
+            (object)[ 'labels' => [ 'name' => 'Type With Spaces In Name' ] ];
 
         \WP_Mock::userFunction(
             'get_post_type_object',
@@ -224,22 +225,23 @@ final class DetectPostsPaginationURLsTest extends TestCase {
             '/mycustomtype/page/6/',
             '/mycustomtype/page/7/',
         ];
-        $actual = DetectPostsPaginationURLs::detect( $site_url );
-        $this->assertEquals( $expected, $actual );
+        $actual = DetectPostsPaginationURLs::detect($site_url);
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testDetectWithPostsPage() {
+    public function testDetectWithPostsPage()
+    {
         global $wpdb;
         // Set the WordPress pagination base
         global $wp_rewrite;
         $site_url = 'https://foo.com/';
 
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wp_rewrite = (object) [ 'pagination_base' => 'page' ];
+        $wp_rewrite = (object)[ 'pagination_base' => 'page' ];
 
         // Create 1 post object
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wpdb = Mockery::mock( '\WPDB' );
+        $wpdb = Mockery::mock('\WPDB');
         // set table name
         $wpdb->posts = 'wp_posts';
         $query_string = "
@@ -249,16 +251,16 @@ final class DetectPostsPaginationURLsTest extends TestCase {
             AND post_type NOT IN ('revision','nav_menu_item')";
 
         $posts = [
-            (object) [
+            (object)[
                 'ID' => '1',
                 'post_type' => 'post',
             ],
         ];
 
-        $wpdb->shouldReceive( 'get_results' )
-            ->with( $query_string )
+        $wpdb->shouldReceive('get_results')
+            ->with($query_string)
             ->once()
-            ->andReturn( $posts );
+            ->andReturn($posts);
 
         // Set pagination to 3 posts per page
         \WP_Mock::userFunction(
@@ -273,12 +275,12 @@ final class DetectPostsPaginationURLsTest extends TestCase {
         $posts_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
             " post_status = 'publish' AND post_type = 'post'";
 
-        $wpdb->shouldReceive( 'get_var' )
-            ->with( $posts_query )
+        $wpdb->shouldReceive('get_var')
+            ->with($posts_query)
             ->once()
-            ->andReturn( 15 );
+            ->andReturn(15);
 
-        $post_type_object = (object) [ 'labels' => [ 'name' => 'Posts' ] ];
+        $post_type_object = (object)[ 'labels' => [ 'name' => 'Posts' ] ];
 
         \WP_Mock::userFunction(
             'get_post_type_object',
@@ -316,7 +318,7 @@ final class DetectPostsPaginationURLsTest extends TestCase {
         ];
         // getting '/blog//page/1/'...
 
-        $actual = DetectPostsPaginationURLs::detect( $site_url );
-        $this->assertEquals( $expected, $actual );
+        $actual = DetectPostsPaginationURLs::detect($site_url);
+        $this->assertEquals($expected, $actual);
     }
 }

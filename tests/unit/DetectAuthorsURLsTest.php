@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use PHPUnit\Framework\TestCase;
-use WP_Mock;
+final class DetectAuthorsURLsTest extends \PHPUnit\Framework\TestCase
+{
 
-final class DetectAuthorsURLsTest extends TestCase {
-
-
-    public function testDetect() {
+    public function testDetect()
+    {
         $site_url = 'https://foo.com/';
         $users = [];
 
         // Create some virtual users
-        for ( $i = 1; $i <= 3; $i++ ) {
+        for ($i = 1; $i <= 3; $i++) {
             // Add the user
-            $users[] = (object) [ 'ID' => $i ];
+            $users[] = (object)[ 'ID' => $i ];
 
             // Create an author URL for this user
             \WP_Mock::userFunction(
@@ -29,7 +29,7 @@ final class DetectAuthorsURLsTest extends TestCase {
         }
 
         // create user missing author URL
-        $users[] = (object) [ 'ID' => 4 ];
+        $users[] = (object)[ 'ID' => 4 ];
         \WP_Mock::userFunction(
             'get_author_posts_url',
             [
@@ -53,6 +53,6 @@ final class DetectAuthorsURLsTest extends TestCase {
             "{$site_url}users/3",
         ];
         $actual = DetectAuthorsURLs::detect();
-        $this->assertEquals( $expected, $actual );
+        $this->assertEquals($expected, $actual);
     }
 }

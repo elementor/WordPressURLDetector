@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use Exception;
-
-class WordPressURLDetectorException extends Exception {
+class WordPressURLDetectorException extends \Exception
+{
 }
-

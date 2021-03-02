@@ -1,24 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
-class DetectPluginAssets {
+class DetectPluginAssets
+{
 
     /**
      * Detect Plugin asset URLs
      *
-     * @return string[] list of URLs
+     * @return array<string> list of URLs
      */
-    public static function detect() : array {
+    public static function detect(): array
+    {
         $files = [];
 
-        $plugins_path = SiteInfo::getPath( 'plugins' );
-        $plugins_url = SiteInfo::getUrl( 'plugins' );
+        $plugins_path = SiteInfo::getPath('plugins');
+        $plugins_url = SiteInfo::getUrl('plugins');
 
-        if ( is_dir( $plugins_path ) ) {
+        if (is_dir($plugins_path)) {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator(
                     $plugins_path,
@@ -26,32 +30,32 @@ class DetectPluginAssets {
                 )
             );
 
-            $active_plugins = get_option( 'active_plugins' );
+            $active_plugins = get_option('active_plugins');
 
             $active_plugin_dirs = array_map(
-                function ( $active_plugin ) {
-                    return explode( '/', $active_plugin )[0];
+                static function ( $active_plugin ) {
+                    return explode('/', $active_plugin)[0];
                 },
                 $active_plugins
             );
 
-            foreach ( $iterator as $filename => $file_object ) {
+            foreach ($iterator as $filename => $file_object) {
                 $path_crawlable =
-                    FilesHelper::filePathLooksCrawlable( $filename );
+                    FilesHelper::filePathLooksCrawlable($filename);
 
-                if ( ! $path_crawlable ) {
+                if (! $path_crawlable) {
                     continue;
                 }
 
                 $matches_active_plugin_dir =
-                    ( str_replace( $active_plugin_dirs, '', $filename ) !== $filename );
+                    ( str_replace($active_plugin_dirs, '', $filename) !== $filename );
 
-                if ( ! $matches_active_plugin_dir ) {
+                if (! $matches_active_plugin_dir) {
                     continue;
                 }
 
                 // Standardise all paths to use / (Windows support)
-                $filename = str_replace( '\\', '/', $filename );
+                $filename = str_replace('\\', '/', $filename);
 
                 $detected_filename =
                     str_replace(
@@ -67,12 +71,14 @@ class DetectPluginAssets {
                         $detected_filename
                     );
 
-                if ( is_string( $detected_filename ) ) {
-                    array_push(
-                        $files,
-                        $detected_filename
-                    );
+                if (!is_string($detected_filename)) {
+                    continue;
                 }
+
+                array_push(
+                    $files,
+                    $detected_filename
+                );
             }
         }
 

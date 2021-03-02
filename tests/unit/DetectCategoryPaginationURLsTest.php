@@ -1,41 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use Mockery;
-use PHPUnit\Framework\TestCase;
-use WP_Mock;
+final class DetectCategoryPaginationURLsTest extends \PHPUnit\Framework\TestCase
+{
 
-final class DetectCategoryPaginationURLsTest extends TestCase {
-
-
-    public function testDetect() {
+    public function testDetect()
+    {
         $site_url = 'https://foo.com/';
         $taxonomies = [
-            (object) [ 'name' => 'category' ],
-            (object) [ 'name' => 'post_tag' ],
+            (object)[ 'name' => 'category' ],
+            (object)[ 'name' => 'post_tag' ],
         ];
         $terms = [
             'category' => [
-                'category1' => (object) [
+                'category1' => (object)[
                     'name' => 'category1',
                     'count' => 1,
                 ],
-                'category2' => (object) [
+                'category2' => (object)[
                     'name' => 'category2',
                     'count' => 3,
                 ],
-                'category3' => (object) [
+                'category3' => (object)[
                     'name' => 'category3',
                     'count' => 4,
                 ],
-                'category4' => (object) [
+                'category4' => (object)[
                     'name' => 'category4',
                     'count' => 7,
                 ],
             ],
             'post_tag' => [
-                'post_tag1' => (object) [
+                'post_tag1' => (object)[
                     'name' => 'post_tag1',
                     'count' => 14,
                 ],
@@ -53,7 +52,7 @@ final class DetectCategoryPaginationURLsTest extends TestCase {
         // Set the WordPress pagination base
         global $wp_rewrite;
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wp_rewrite = (object) [ 'pagination_base' => '/page' ];
+        $wp_rewrite = (object)[ 'pagination_base' => '/page' ];
 
         // Set pagination to 3 posts per page
         \WP_Mock::userFunction(
@@ -76,7 +75,7 @@ final class DetectCategoryPaginationURLsTest extends TestCase {
                 'return' => $taxonomies,
             ]
         );
-        foreach ( $taxonomies as $taxonomy ) {
+        foreach ($taxonomies as $taxonomy) {
             // And the terms within those taxonomies
             \WP_Mock::userFunction(
                 'get_terms',
@@ -86,18 +85,18 @@ final class DetectCategoryPaginationURLsTest extends TestCase {
                         $taxonomy->name,
                         [ 'hide_empty' => true ],
                     ],
-                    'return' => $terms[ $taxonomy->name ],
+                    'return' => $terms[$taxonomy->name],
                 ]
             );
 
             // ...and the links for those terms
-            foreach ( $terms[ $taxonomy->name ] as $term ) {
+            foreach ($terms[$taxonomy->name] as $term) {
                 \WP_Mock::userFunction(
                     'get_term_link',
                     [
                         'times' => 1,
                         'args' => [ $term ],
-                        'return' => $term_links[ $term->name ],
+                        'return' => $term_links[$term->name],
                     ]
                 );
             }
@@ -115,6 +114,6 @@ final class DetectCategoryPaginationURLsTest extends TestCase {
             "{$site_url}tags/foo/bar/page/5/",
         ];
         $actual = DetectCategoryPaginationURLs::detect();
-        $this->assertEquals( $expected, $actual );
+        $this->assertEquals($expected, $actual);
     }
 }

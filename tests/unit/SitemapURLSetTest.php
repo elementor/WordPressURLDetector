@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPressURLDetector;
 
-use PHPUnit\Framework\TestCase;
-
-class SitemapURLSetTest extends TestCase {
+class SitemapURLSetTest extends \PHPUnit\Framework\TestCase
+{
 
     /**
      * @dataProvider generateDataForTest
@@ -12,12 +13,13 @@ class SitemapURLSetTest extends TestCase {
      * @param string $body URL body content
      * @param array $result Test result to match
      */
-    public function testURLSet( $url, $body, $result ) {
-        $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WordPressURLDetector\SitemapParser', $parser );
-        $parser->parse( $url, $body );
-        $this->assertEquals( [], $parser->getSitemaps() );
-        $this->assertEquals( $result, $parser->getURLs() );
+    public function testURLSet( $url, $body, $result )
+    {
+        $parser = new SitemapParser('SitemapParser');
+        $this->assertInstanceOf('WordPressURLDetector\SitemapParser', $parser);
+        $parser->parse($url, $body);
+        $this->assertEquals([], $parser->getSitemaps());
+        $this->assertEquals($result, $parser->getURLs());
     }
 
     /**
@@ -25,12 +27,13 @@ class SitemapURLSetTest extends TestCase {
      *
      * @return array
      */
-    public function generateDataForTest() {
+    public function generateDataForTest()
+    {
         return [
             [
                 'http://www.example.com/sitemap.xml',
 
-                <<<XMLSITEMAP
+                <<<'XMLSITEMAP'
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <url>
