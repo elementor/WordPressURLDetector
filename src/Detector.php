@@ -63,63 +63,68 @@ class Detector
             $arrays_to_merge[] = DetectThemeAssets::detect('parent');
         }
 
-
         if ($config->detectChildThemeAssets) {
             $arrays_to_merge[] = DetectThemeAssets::detect('child');
         }
 
 
-        if ($detect_plugin_assets) {
+        if ($config->detectPluginAssets) {
             $arrays_to_merge[] = DetectPluginAssets::detect();
         }
 
 
-        if ($detect_wpinc_assets) {
+        if ($config->detectWPIncludesAssets) {
             $arrays_to_merge[] = DetectWPIncludesAssets::detect();
         }
 
 
-        if ($detect_vendor_cache) {
+        if ($config->detectVendorFiles) {
             $arrays_to_merge[] = DetectVendorFiles::detect($siteInfo::getURL('site'));
         }
 
 
-        if ($detect_posts_pagination) {
+        if ($config->detectPostsPaginationURLs) {
             $arrays_to_merge[] = DetectPostsPaginationURLs::detect($siteInfo::getURL('site'));
         }
 
 
-        if ($detect_archives) {
+        if ($config->detectArchiveURLs) {
             $arrays_to_merge[] = DetectArchiveURLs::detect();
         }
 
 
-        if ($detect_categories) {
+        if ($config->detectCategoryURLs) {
             $arrays_to_merge[] = DetectCategoryURLs::detect();
         }
 
 
-        if ($detect_category_pagination) {
+        if ($config->detectCategoryPaginationURLs) {
             $arrays_to_merge[] = DetectCategoryPaginationURLs::detect();
         }
 
 
-        if ($detect_authors) {
+        if ($config->detectAuthorsURLs) {
             $arrays_to_merge[] = DetectAuthorsURLs::detect();
         }
 
 
-        if ($detect_authors_pagination) {
+        if ($config->detectAuthorPaginationURLs) {
             $arrays_to_merge[] = DetectAuthorPaginationURLs::detect($siteInfo::getUrl('site'));
         }
 
         $url_queue = call_user_func_array('array_merge', $arrays_to_merge);
 
-        $url_queue = FilesHelper::cleanDetectedURLs($url_queue);
+        // this will filter any #anchor or ?query_string URLs, so move to WP2Static
+
+        // TODO: why using 'home' vs 'site' here?
+        $url_queue = FilesHelper::cleanDetectedURLs($url_queue, $siteInfo::getUrl('home'));
 
         $unique_urls = array_unique($url_queue);
 
-        CrawlQueue::addUrls($unique_urls);
+
+
+        // move to WP2Static
+        // CrawlQueue::addUrls($unique_urls);
 
         $total_detected = (string)count($unique_urls);
 

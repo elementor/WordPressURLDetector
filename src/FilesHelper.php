@@ -11,36 +11,6 @@ class FilesHelper
 {
 
     /**
-     * Recursively delete a directory
-     *
-     * @throws \WordPressURLDetector\WordPressURLDetectorException
-     */
-    public static function deleteDirWithFiles( string $dir ): void
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $dir_files = scandir($dir);
-
-        if (! $dir_files) {
-            $err = 'Trying to delete nonexistant dir: ' . $dir;
-            WsLog::l($err);
-            throw new \WordPressURLDetector\WordPressURLDetectorException($err);
-        }
-
-        $files = array_diff($dir_files, [ '.', '..' ]);
-
-        foreach ($files as $file) {
-            ( is_dir("$dir/$file") ) ?
-            self::deleteDirWithFiles("$dir/$file") :
-            unlink("$dir/$file");
-        }
-
-        rmdir($dir);
-    }
-
-    /**
      * Get public URLs for all files in a local directory.
      *
      * @return array<string> list of relative, urlencoded URLs
@@ -232,6 +202,8 @@ class FilesHelper
                     $url
                 );
 
+                // TODO: this looks like a cause for malformed URLs http:/something
+                // we should be looking for a host by parsing URL
                 $url = str_replace(
                     '//',
                     '/',
