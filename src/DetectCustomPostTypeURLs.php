@@ -1,9 +1,21 @@
 <?php
 
+/**
+ * DetectCustomPostTypeURLs.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Detects custom post type URLs
+ */
 class DetectCustomPostTypeURLs
 {
 
@@ -16,17 +28,17 @@ class DetectCustomPostTypeURLs
     {
         global $wpdb;
 
-        $post_urls = [];
+        $postURLs = [];
 
-        $post_ids = $wpdb->get_col(
+        $postIDs = $wpdb->get_col(
             "SELECT ID
             FROM {$wpdb->posts}
             WHERE post_status = 'publish'
             AND post_type NOT IN ('revision','nav_menu_item')"
         );
 
-        foreach ($post_ids as $post_id) {
-            $permalink = get_post_permalink($post_id);
+        foreach ($postIDs as $postID) {
+            $permalink = get_post_permalink($postID);
 
             if (! is_string($permalink)) {
                 continue;
@@ -36,9 +48,9 @@ class DetectCustomPostTypeURLs
                 continue;
             }
 
-            $post_urls[] = $permalink;
+            $postURLs[] = $permalink;
         }
 
-        return $post_urls;
+        return $postURLs;
     }
 }
