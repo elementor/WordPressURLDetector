@@ -21,5 +21,5 @@ if (! class_exists(Auditor::class) && is_file(__DIR__ . '/../vendor/autoload.php
     require_once __DIR__ . '/../vendor/autoload.php';
 }
 
-// TODO: instantiate with DetectorConfig
+// TODO: instantiate with DetectorConfig & SiteInfo
 exit((new Detector($argv[1] ?? __DIR__ . '/..'))->runDetector());
