@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +13,7 @@ class SitemapStrictTest extends TestCase {
      */
     public function testStrict( $url, $body ) {
         $parser = new SitemapParser( 'SitemapParser', [] );
-        $this->assertInstanceOf( 'WP2Static\SitemapParser', $parser );
+        $this->assertInstanceOf( 'WordPressURLDetector\SitemapParser', $parser );
         $parser->parse( $url, $body );
         $this->assertEquals( [], $parser->getSitemaps() );
         $this->assertEquals( [], $parser->getURLs() );

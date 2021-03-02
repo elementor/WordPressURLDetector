@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 /*
     Singleton instance to allow instantiating once and allow reading
@@ -37,7 +37,7 @@ class SiteInfo {
 
             /*
                 Note:  'home_path' => get_home_path(),
-                // errors trying to find it in WP2Static\get_home_path()...
+                // errors trying to find it in WordPressURLDetector\get_home_path()...
             */
             'home_url' => trailingslashit( get_home_url() ),
             'includes_path' => trailingslashit( ABSPATH . WPINC ),
@@ -79,7 +79,7 @@ class SiteInfo {
     /**
      * Get Path via name
      *
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public static function getPath( string $name ) : string {
         if ( self::$instance === null ) {
@@ -92,7 +92,7 @@ class SiteInfo {
         if ( ! array_key_exists( $key, self::$info ) ) {
             $err = 'Attempted to access missing SiteInfo path';
             WsLog::l( $err );
-            throw new WP2StaticException( $err );
+            throw new WordPressURLDetectorException( $err );
         }
 
         // Standardise all paths to use / (Windows support)
@@ -104,7 +104,7 @@ class SiteInfo {
     /**
      * Get URL via name
      *
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public static function getUrl( string $name ) : string {
         if ( self::$instance === null ) {
@@ -116,7 +116,7 @@ class SiteInfo {
         if ( ! array_key_exists( $key, self::$info ) ) {
             $err = 'Attempted to access missing SiteInfo URL';
             WsLog::l( $err );
-            throw new WP2StaticException( $err );
+            throw new WordPressURLDetectorException( $err );
         }
 
         return self::$info[ $key ];
@@ -162,7 +162,7 @@ class SiteInfo {
     /**
      * Get Site URL host
      *
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public static function getSiteURLHost() : string {
         if ( self::$instance === null ) {
@@ -174,7 +174,7 @@ class SiteInfo {
         if ( ! is_string( $url_host ) ) {
             $err = 'Failed to get hostname from Site URL';
             WsLog::l( $err );
-            throw new WP2StaticException( $err );
+            throw new WordPressURLDetectorException( $err );
         }
 
         return $url_host;

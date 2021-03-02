@@ -1,11 +1,11 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 /**
  * Class DetectVendorFiles
  *
- * @package WP2Static
+ * @package WordPressURLDetector
  */
 class DetectVendorFiles {
 

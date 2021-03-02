@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -11,7 +11,7 @@ class DetectWPIncludesAssets {
      * Detect assets within wp-includes path
      *
      * @return string[] list of URLs
-     * @throw WP2StaticException
+     * @throw WordPressURLDetectorException
      */
     public static function detect() : array {
         $files = [];

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use Exception;
 
@@ -35,7 +35,7 @@ class URLHelper {
      * @param array<string|int> $changes  List of querystring params to set
      * @param string $url             A complete URL. Leave empty to use current URL
      * @return string                 The new URL
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public static function modifyUrl( array $changes, string $url = '' ) : string {
         // If $url wasn't passed in, use the current url
@@ -62,7 +62,7 @@ class URLHelper {
             ! isset( $url_array['host'] ) ||
             ! isset( $url_array['path'] )
         ) {
-            throw new WP2StaticException( 'Unable to parse URL' );
+            throw new WordPressURLDetectorException( 'Unable to parse URL' );
         }
 
         return $url_array['scheme'] . '://' .

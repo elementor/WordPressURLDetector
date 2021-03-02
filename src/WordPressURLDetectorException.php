@@ -1,9 +1,9 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use Exception;
 
-class WP2StaticException extends Exception {
+class WordPressURLDetectorException extends Exception {
 }
 

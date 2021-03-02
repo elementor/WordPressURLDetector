@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +12,7 @@ class SitemapRecursiveTest extends TestCase {
      */
     public function testRecursive( $url ) {
         $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WP2Static\SitemapParser', $parser );
+        $this->assertInstanceOf( 'WordPressURLDetector\SitemapParser', $parser );
         $parser->parseRecursive( $url );
         $this->assertTrue( is_array( $parser->getSitemaps() ) );
         $this->assertTrue( is_array( $parser->getURLs() ) );

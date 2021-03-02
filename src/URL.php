@@ -5,7 +5,7 @@
     uses https://github.com/wasinger/url
 */
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 class URL {
 
@@ -23,7 +23,7 @@ class URL {
      *
      * @param string $parent_page_url URL optional parent page to make
      * absolute URL from
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public function __construct( string $url, string $parent_page_url = null ) {
         $url = new \Wa72\Url\Url( $url );
@@ -34,7 +34,7 @@ class URL {
         } else {
             // test absolute URL
             if ( ! $url->getHost() ) {
-                throw new WP2StaticException(
+                throw new WordPressURLDetectorException(
                     'Trying to create unsupported URL'
                 );
             }

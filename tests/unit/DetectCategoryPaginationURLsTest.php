@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;

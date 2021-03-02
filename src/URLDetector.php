@@ -10,7 +10,7 @@
 
 */
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 class URLDetector {
 

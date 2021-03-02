@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use RecursiveIteratorIterator;
 use RecursiveArrayIterator;
@@ -11,7 +11,7 @@ class FilesHelper {
     /**
      * Recursively delete a directory
      *
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public static function deleteDirWithFiles( string $dir ) : void {
         if ( is_dir( $dir ) ) {
@@ -20,7 +20,7 @@ class FilesHelper {
             if ( ! $dir_files ) {
                 $err = 'Trying to delete nonexistant dir: ' . $dir;
                 WsLog::l( $err );
-                throw new WP2StaticException( $err );
+                throw new WordPressURLDetectorException( $err );
             }
 
             $files = array_diff( $dir_files, [ '.', '..' ] );
@@ -192,7 +192,7 @@ class FilesHelper {
      *
      * @param string[] $urls list of absolute or relative URLs
      * @return string[]|null[] list of relative URLs
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public static function cleanDetectedURLs( array $urls ) : array {
         $home_url = SiteInfo::getUrl( 'home' );
@@ -200,7 +200,7 @@ class FilesHelper {
         if ( ! is_string( $home_url ) ) {
             $err = 'Home URL not defined ';
             WsLog::l( $err );
-            throw new WP2StaticException( $err );
+            throw new WordPressURLDetectorException( $err );
         }
 
         $cleaned_urls = array_map(

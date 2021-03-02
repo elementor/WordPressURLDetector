@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use WP_CLI;
 
@@ -13,7 +13,7 @@ class CLI {
      */
     public function diagnostics() : void {
         WP_CLI::line(
-            PHP_EOL . 'WP2Static' . PHP_EOL
+            PHP_EOL . 'WordPressURLDetector' . PHP_EOL
         );
 
         $environmental_info = [
@@ -681,7 +681,7 @@ class CLI {
      *
      * @param string[] $args Arguments after command
      * @param string[] $assoc_args Parameters after command
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public function addons( array $args, array $assoc_args ) : void {
         $action = isset( $args[0] ) ? $args[0] : null;
@@ -712,7 +712,7 @@ class CLI {
             $addon_slug = isset( $args[1] ) ? $args[1] : null;
 
             if ( ! $addon_slug ) {
-                throw new WP2StaticException(
+                throw new WordPressURLDetectorException(
                     'No addon slug given for CLI toggling'
                 );
 

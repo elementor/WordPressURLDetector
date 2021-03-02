@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use Mockery;
 use org\bovigo\vfs\vfsStream;
@@ -128,7 +128,7 @@ final class FileHelperTest extends TestCase {
         $vfs = vfsStream::setup( 'root' );
         vfsStream::create( $structure, $vfs );
         // Set virtual WP root directory to /root/ for this test
-        $mock = Mockery::mock( 'overload:\WP2Static\SiteInfo' );
+        $mock = Mockery::mock( 'overload:\WordPressURLDetector\SiteInfo' );
         $mock->shouldreceive( 'getPath' )->andReturn( vfsStream::url( 'root' ) . '/' );
 
         // Top level folder
@@ -336,7 +336,7 @@ final class FileHelperTest extends TestCase {
 
     public function testCleanDetectedURLs() {
         // Mock the WP functions used by FilesHelper::cleanDetectedURLs()
-        $mock = \Mockery::mock( 'alias:WP2Static\SiteInfo' )
+        $mock = \Mockery::mock( 'alias:WordPressURLDetector\SiteInfo' )
             ->shouldReceive( 'getUrl' )
             ->andReturn( 'https://foo.com/' );
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
-use WP2StaticGuzzleHttp\Client;
-use WP2StaticGuzzleHttp\Psr7\Request;
-use WP2StaticGuzzleHttp\Psr7\Response;
+use WordPressURLDetectorGuzzleHttp\Client;
+use WordPressURLDetectorGuzzleHttp\Psr7\Request;
+use WordPressURLDetectorGuzzleHttp\Psr7\Response;
 
 class DetectSitemapsURLs {
 
@@ -12,11 +12,11 @@ class DetectSitemapsURLs {
      * Detect Authors URLs
      *
      * @return string[] list of URLs
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public static function detect( string $wp_site_url ) : array {
         $sitemaps_urls = [];
-        $parser = new SitemapParser( 'WP2Static.com', [ 'strict' => false ] );
+        $parser = new SitemapParser( 'WordPressURLDetector.com', [ 'strict' => false ] );
 
         $site_path = rtrim( SiteInfo::getURL( 'site' ), '/' );
 
@@ -46,7 +46,7 @@ class DetectSitemapsURLs {
                 'headers' => [
                     'User-Agent' => apply_filters(
                         'wp2static_curl_user_agent',
-                        'WP2Static.com',
+                        'WordPressURLDetector.com',
                     ),
                 ],
             ]
@@ -120,9 +120,9 @@ class DetectSitemapsURLs {
                     }
                 }
             }
-        } catch ( WP2StaticException $e ) {
+        } catch ( WordPressURLDetectorException $e ) {
             WsLog::l( $e->getMessage() );
-            throw new WP2StaticException( $e->getMessage(), 0, $e );
+            throw new WordPressURLDetectorException( $e->getMessage(), 0, $e );
         }
 
         return $sitemaps_urls;

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 // TODO: add option in UI to also write to PHP error_log
 class WsLog {

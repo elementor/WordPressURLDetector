@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +14,7 @@ class SitemapIndexTest extends TestCase {
      */
     public function testSitemapIndex( $url, $body, $result ) {
         $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WP2Static\SitemapParser', $parser );
+        $this->assertInstanceOf( 'WordPressURLDetector\SitemapParser', $parser );
         $parser->parse( $url, $body );
         $this->assertEquals( $result, $parser->getSitemaps() );
         $this->assertEquals( [], $parser->getURLs() );

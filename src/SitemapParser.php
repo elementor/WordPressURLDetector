@@ -1,8 +1,8 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
-use WP2StaticGuzzleHttp;
+use WordPressURLDetectorGuzzleHttp;
 use SimpleXMLElement;
 
 /**
@@ -21,7 +21,7 @@ class SitemapParser {
     /**
      * Default User-Agent
      */
-    const DEFAULT_USER_AGENT = 'WP2Static.com';
+    const DEFAULT_USER_AGENT = 'WordPressURLDetector.com';
 
     /**
      * XML file extension
@@ -124,7 +124,7 @@ class SitemapParser {
             $urls = $this->urls;
             try {
                 $this->parse( $todo[0] );
-            } catch ( WP2StaticException $e ) {
+            } catch ( WordPressURLDetectorException $e ) {
                 // Keep crawling
                 continue;
             }
@@ -170,13 +170,13 @@ class SitemapParser {
      * @param string $url URL to parse
      * @param string|null $url_content URL body content (provide to skip download)
      * @return void
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     public function parse( $url, $url_content = null ) {
         $this->clean();
         $this->current_url = $this->urlEncode( $url );
         if ( ! $this->urlValidate( $this->current_url ) ) {
-            throw new WP2StaticException( 'Invalid URL' );
+            throw new WordPressURLDetectorException( 'Invalid URL' );
         }
         $this->history[] = $this->current_url;
         $response = is_string( $url_content ) ? $url_content : $this->getContent();
@@ -218,27 +218,27 @@ class SitemapParser {
      * Request the body content of an URL
      *
      * @return string Raw body content
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     protected function getContent() {
         $this->current_url =
             $this->urlEncode( (string) $this->current_url );
 
         if ( ! $this->urlValidate( $this->current_url ) ) {
-            throw new WP2StaticException( 'Invalid URL' );
+            throw new WordPressURLDetectorException( 'Invalid URL' );
         }
 
         try {
             if ( ! isset( $this->config['guzzle']['headers']['User-Agent'] ) ) {
                 $this->config['guzzle']['headers']['User-Agent'] = $this->user_agent;
             }
-            $client = new WP2StaticGuzzleHttp\Client();
+            $client = new WordPressURLDetectorGuzzleHttp\Client();
             $res = $client->request( 'GET', $this->current_url, $this->config['guzzle'] );
             return $res->getBody()->getContents();
-        } catch ( WP2StaticGuzzleHttp\Exception\TransferException $e ) {
-            throw new WP2StaticException( 'Unable to fetch URL contents', 0, $e );
-        } catch ( WP2StaticGuzzleHttp\Exception\GuzzleException $e ) {
-            throw new WP2StaticException( 'WP2StaticGuzzleHttp exception', 0, $e );
+        } catch ( WordPressURLDetectorGuzzleHttp\Exception\TransferException $e ) {
+            throw new WordPressURLDetectorException( 'Unable to fetch URL contents', 0, $e );
+        } catch ( WordPressURLDetectorGuzzleHttp\Exception\GuzzleException $e ) {
+            throw new WordPressURLDetectorException( 'WordPressURLDetectorGuzzleHttp exception', 0, $e );
         }
     }
 
@@ -336,7 +336,7 @@ class SitemapParser {
      *
      * @param string $xml
      * @return \SimpleXMLElement|bool
-     * @throws WP2StaticException
+     * @throws WordPressURLDetectorException
      */
     protected function generateXMLObject( $xml ) {
         // strip XML comments from files

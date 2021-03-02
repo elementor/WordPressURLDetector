@@ -17,13 +17,13 @@ parameters:
     ignoreErrors:
         # TODO I should really develop a tiny Request Handler.
         # https://gist.github.com/nicolas-grekas/1028251#improving-native-php-interface
-        - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
+        - message: '#^In method "WordPressURLDetector\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
           path: src/Controller.php
           count: 5
-        - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
+        - message: '#^In method "WordPressURLDetector\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
           path: src/CoreOptions.php
           count: 19
-        - message: '#^In method "WP2Static\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
+        - message: '#^In method "WordPressURLDetector\\\S+::\S+", you should not use the \$_(GET|POST) superglobal#'
           path: src/ViewRenderer.php
           count: 32
         - '/^Parameter #2 \$callable of static method WP_CLI::add_command\(\) expects callable\(\): mixed, \S+ given\.$/'

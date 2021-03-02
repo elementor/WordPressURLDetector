@@ -1,6 +1,6 @@
 <?php
 
-namespace WP2Static;
+namespace WordPressURLDetector;
 
 use PHPUnit\Framework\TestCase;
 
@@ -11,9 +11,9 @@ class SitemapInvalidURLTest extends TestCase {
      * @param string $url URL
      */
     public function testInvalidURL( $url ) {
-        $this->expectException( 'WP2Static\WP2StaticException' );
+        $this->expectException( 'WordPressURLDetector\WordPressURLDetectorException' );
         $parser = new SitemapParser( 'SitemapParser' );
-        $this->assertInstanceOf( 'WP2Static\SitemapParser', $parser );
+        $this->assertInstanceOf( 'WordPressURLDetector\SitemapParser', $parser );
         $parser->parse( $url );
     }
 
