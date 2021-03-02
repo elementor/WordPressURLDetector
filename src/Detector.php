@@ -13,21 +13,13 @@ declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
 /**
  * Detects URLs in a WordPress site
  */
 class Detector
 {
-    public Logger $log;
-
     protected function __construct()
     {
-        $this->log = new Logger('detector');
-        $this->log->pushHandler(new StreamHandler(__DIR__ . '/detector.log', Logger::DEBUG));
-        $this->log->info('Instantiated Detector');
     }
 
     /**
