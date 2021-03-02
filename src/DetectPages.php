@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
-class DetectPostURLs
+class DetectPages
 {
 
     /**
-     * Detect Post URLs
+     * Detect Page URLs
      *
      * @return array<string> list of URLs
      */
@@ -16,29 +16,25 @@ class DetectPostURLs
     {
         global $wpdb;
 
-        $post_urls = [];
+        $page_urls = [];
 
-        $post_ids = $wpdb->get_col(
+        $page_ids = $wpdb->get_col(
             "SELECT ID
             FROM {$wpdb->posts}
             WHERE post_status = 'publish'
-            AND post_type = 'post'"
+            AND post_type = 'page'"
         );
 
-        foreach ($post_ids as $post_id) {
-            $permalink = get_permalink($post_id);
-
-            if (! $permalink) {
-                continue;
-            }
+        foreach ($page_ids as $page_id) {
+            $permalink = get_page_link($page_id);
 
             if (strpos($permalink, '?post_type') !== false) {
                 continue;
             }
 
-            $post_urls[] = $permalink;
+            $page_urls[] = $permalink;
         }
 
-        return $post_urls;
+        return $page_urls;
     }
 }

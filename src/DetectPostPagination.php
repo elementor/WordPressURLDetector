@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
-class DetectPostsPaginationURLs
+class DetectPostPagination
 {
 
     /**

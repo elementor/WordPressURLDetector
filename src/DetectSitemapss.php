@@ -7,7 +7,7 @@ namespace WordPressURLDetector;
 use WordPressURLDetectorGuzzleHttp\Client;
 use WordPressURLDetectorGuzzleHttp\Psr7\Request;
 
-class DetectSitemapsURLs
+class DetectSitemaps
 {
 
     /**

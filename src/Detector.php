@@ -53,7 +53,7 @@ class Detector
                     $config->detectVendorFiles ? DetectVendorFiles::detect($siteInfo::getURL('site')) : [],
                     $config->detectPostPagination ? DetectPostPagination::detect($siteInfo::getURL('site')) : [],
                     $config->detectArchive ? DetectArchive::detect() : [],
-                    $config->detectCategory ? DetectCategory::detect() : [],
+                    $config->detectCategories ? DetectCategories::detect() : [],
                     $config->detectCategoryPagination ? DetectCategoryPagination::detect() : [],
                     $config->detectAuthors ? DetectAuthors::detect() : [],
                     $config->detectAuthorPagination ? DetectAuthorPagination::detect($siteInfo::getUrl('site')) : [],

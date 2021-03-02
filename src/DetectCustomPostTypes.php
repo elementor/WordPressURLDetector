@@ -1,7 +1,7 @@
 <?php
 
 /**
- * DetectCustomPostTypeURLs.php
+ * DetectCustomPostTypes.php
  *
  * @package           WordPressURLDetector
  * @author            Leon Stafford <me@ljs.dev>
@@ -16,7 +16,7 @@ namespace WordPressURLDetector;
 /**
  * Detects custom post type URLs
  */
-class DetectCustomPostTypeURLs
+class DetectCustomPostTypes
 {
 
     /**

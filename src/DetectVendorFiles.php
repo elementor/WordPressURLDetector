@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * DetectVendorFiles.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
@@ -17,44 +26,45 @@ class DetectVendorFiles
      *
      * @return array<string> list of URLs
      */
-    public static function detect( string $wp_site_url ): array
+    public static function detect( string $wpSiteURL ): array
     {
-        $vendor_files = [];
+        $vendorFiles = [];
 
         // cache dir used by Autoptimize and other themes/plugins
-        $vendor_cache_dir =
+        $vendorCacheDir =
             SiteInfo::getPath('content') . 'cache/';
 
-        if (is_dir($vendor_cache_dir)) {
-            $site_url = SiteInfo::getUrl('site');
-            $content_url = SiteInfo::getUrl('content');
+        if (is_dir($vendorCacheDir)) {
+            $siteURL = SiteInfo::getUrl('site');
+            $contentURL = SiteInfo::getUrl('content');
 
             // get difference between home and wp-contents URL
             $prefix = str_replace(
-                $site_url,
+                $siteURL,
                 '/',
-                $content_url
+                $contentURL
             );
 
-            $vendor_cache_urls = DetectVendorCache::detect(
-                $vendor_cache_dir,
+            $vendorCacheURLs = DetectVendorCache::detect(
+                $vendorCacheDir,
                 SiteInfo::getPath('content'),
                 $prefix
             );
 
-            $vendor_files = array_merge($vendor_files, $vendor_cache_urls);
+            $vendorFiles = array_merge($vendorFiles, $vendorCacheURLs);
         }
 
+        // TODO: move into own detector class
         if (class_exists('Custom_Permalinks')) {
             global $wpdb;
 
             $query = "
-                SELECT meta_value
+                SELECT meta_value AS metaValue
                 FROM %s
                 WHERE meta_key = '%s'
                 ";
 
-            $custom_permalinks = [];
+            $customPermalinks = [];
 
             $posts = $wpdb->get_results(
                 sprintf(
@@ -66,16 +76,16 @@ class DetectVendorFiles
 
             if ($posts) {
                 foreach ($posts as $post) {
-                    $custom_permalinks[] = $wp_site_url . $post->meta_value;
+                    $customPermalinks[] = $wpSiteURL . $post->metaValue;
                 }
 
-                $vendor_files = array_merge(
-                    $vendor_files,
-                    $custom_permalinks
+                $vendorFiles = array_merge(
+                    $vendorFiles,
+                    $customPermalinks
                 );
             }
         }
 
-        return $vendor_files;
+        return $vendorFiles;
     }
 }
