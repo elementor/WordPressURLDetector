@@ -65,6 +65,7 @@ class DetectCommonCache
                 continue;
             }
 
+            // TODO: let's get this WP function out of here!
             array_push(
                 $files,
                 $prefix .

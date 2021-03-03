@@ -1,7 +1,7 @@
 <?php
 
 /**
- * DetectVendorFiles.php
+ * DetectThirdPartyAssets.php
  *
  * @package           WordPressURLDetector
  * @author            Leon Stafford <me@ljs.dev>
@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace WordPressURLDetector;
 
 /**
- * Class DetectVendorFiles
+ * Class DetectThirdPartyAssets
  *
  * @package WordPressURLDetector
  */
-class DetectVendorFiles
+class DetectThirdPartyAssets
 {
 
     /**

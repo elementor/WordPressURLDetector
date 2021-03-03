@@ -50,7 +50,12 @@ class Detector
                     $config->detectChildThemeAssets ? DetectThemeAssets::detect('child') : [],
                     $config->detectPluginAssets ? DetectPluginAssets::detect() : [],
                     $config->detectWPIncludesAssets ? DetectWPIncludesAssets::detect() : [],
-                    $config->detectVendorFiles ? DetectVendorFiles::detect($siteInfo::getURL('site')) : [],
+                    $config->detectThirdPartyAssets ?
+                        detectThirdPartyAssets::detect(
+                            $siteInfo::getURL('site'),
+                            $siteInfo::getPath('content'),
+                            $siteInfo::getURL('content'),
+                        ) : [],
                     $config->detectPostPagination ? DetectPostPagination::detect($siteInfo::getURL('site')) : [],
                     $config->detectArchive ? DetectArchive::detect() : [],
                     $config->detectCategories ? DetectCategories::detect() : [],

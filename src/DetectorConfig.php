@@ -20,7 +20,7 @@ class DetectorConfig
     public bool $detectPostURLs = true;
     public bool $detectPostsPaginationURLs = true;
     public bool $detectSitemapsURLs = true;
-    public bool $detectVendorFiles = true;
+    public bool $detectThirdPartyAssets = true;
     public bool $detectWPIncludesAssets = true;
 
     /**
