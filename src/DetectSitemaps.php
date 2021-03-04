@@ -28,7 +28,7 @@ class DetectSitemaps
      * @return array<string> list of URLs
      * @throws \WordPressURLDetector\WordPressURLDetectorException
      */
-    public static function detect( string $wpSiteURL ): array
+    public static function detect( string $wpSiteURL ): array // phpcs:ignore
     {
         $sitemapsURLs = [];
         $parser = new SitemapParser('leonstafford/WordPressURLDetector', [ 'strict' => false ]);
