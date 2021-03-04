@@ -49,9 +49,12 @@ class Detector
                     $config->detectParentThemeAssets ? DetectThemeAssets::detect('parent') : [],
                     $config->detectChildThemeAssets ? DetectThemeAssets::detect('child') : [],
                     $config->detectPluginAssets ? DetectPluginAssets::detect() : [],
-                    $config->detectWPIncludesAssets ? DetectWPIncludesAssets::detect() : [],
-                    $config->detectThirdPartyAssets ?
-                        detectThirdPartyAssets::detect(
+                    $config->detectWPIncludesAssets ? DetectWPIncludesAssets::detect(
+                        $siteInfo::getPath('includes'),
+                        $siteInfo::getUrl('includes'),
+                        $siteInfo::getUrl('home'),
+                    ) : [],
+                    $config->detectThirdPartyAssets ?  detectThirdPartyAssets::detect(
                             $siteInfo::getURL('site'),
                             $siteInfo::getPath('content'),
                             $siteInfo::getURL('content'),

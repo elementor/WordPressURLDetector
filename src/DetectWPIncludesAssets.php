@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * DetectWPIncludesAssets.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
@@ -7,6 +16,11 @@ namespace WordPressURLDetector;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
+/**
+ * Class DetectWPIncludesAssets
+ *
+ * @package WordPressURLDetector
+ */
 class DetectWPIncludesAssets
 {
 
@@ -16,58 +30,46 @@ class DetectWPIncludesAssets
      * @return array<string> list of URLs
      * @throw WordPressURLDetectorException
      */
-    public static function detect(): array
+    public static function detect( string $includesPath, string $includesURL, string $homeURL ): array
     {
-        $files = [];
-
-        $includes_path = SiteInfo::getPath('includes');
-        $includes_url = SiteInfo::getUrl('includes');
-        $home_url = SiteInfo::getUrl('home');
-
-        if (is_dir($includes_path)) {
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $includes_path,
-                    RecursiveDirectoryIterator::SKIP_DOTS
-                )
-            );
-
-            foreach ($iterator as $filename => $file_object) {
-                $path_crawlable =
-                    FilesHelper::filePathLooksCrawlable($filename);
-
-                // Standardise all paths to use / (Windows support)
-                $filename = str_replace('\\', '/', $filename);
-
-                $detected_filename =
-                    str_replace(
-                        $includes_path,
-                        $includes_url,
-                        $filename
-                    );
-
-                $detected_filename =
-                    str_replace(
-                        $home_url,
-                        '',
-                        $detected_filename
-                    );
-
-                if (! is_string($detected_filename)) {
-                    continue;
-                }
-
-                if (!$path_crawlable) {
-                    continue;
-                }
-
-                array_push(
-                    $files,
-                    '/' . $detected_filename
-                );
-            }
+        if (! is_dir($includesPath)) {
+            return [];
         }
 
-        return $files;
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                $includesPath,
+                RecursiveDirectoryIterator::SKIP_DOTS
+            )
+        );
+
+        // return non-empty, rewritten URLs
+        return array_filter(
+            array_map(
+                static function ($filename) use ($homeURL, $includesPath, $includesURL) {
+                    $pathCrawlable =
+                    FilesHelper::filePathLooksCrawlable($filename);
+
+                    // TODO: adjust to array_filter vs abusing this
+                    if (!$pathCrawlable) {
+                        return '';
+                    }
+
+                    // TODO: dubious, use WP helper or RecursiveDirectoryIterator UNIX_PATHS
+                    // Standardise all paths to use / (Windows support)
+                    $filename = str_replace('\\', '/', $filename);
+
+                    $detectedFilename = str_replace($homeURL, '', str_replace($includesPath, $includesURL, $filename));
+
+                    // TODO: adjust to array_filter first vs abusing this
+                    if (! is_string($detectedFilename) || !$pathCrawlable) {
+                        return '';
+                    }
+
+                    return '/' . $detectedFilename;
+                },
+                array_keys($iterator)
+            )
+        );
     }
 }
