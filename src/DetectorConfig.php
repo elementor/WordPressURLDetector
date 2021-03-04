@@ -1,9 +1,21 @@
 <?php
 
+/**
+ * DetectorConfig.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Configurable options for the Detector
+ */
 class DetectorConfig
 {
 
@@ -23,10 +35,7 @@ class DetectorConfig
     public bool $detectThirdPartyAssets = true;
     public bool $detectWPIncludesAssets = true;
 
-    /**
-     * @var string[]
-     */
-    public $filenameIgnorePatterns = [
+    public array $filenameIgnorePatterns = [
         '__MACOSX',
         '.babelrc',
         '.git',
@@ -61,10 +70,7 @@ class DetectorConfig
         'yarn.lock',
     ];
 
-    /**
-     * @var string[]
-     */
-    public $fileExtensionIgnorePatterns = [
+    public array $fileExtensionIgnorePatterns = [
         '.bat',
         '.crt',
         '.DS_Store',

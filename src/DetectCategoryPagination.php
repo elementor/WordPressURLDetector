@@ -1,9 +1,23 @@
 <?php
 
+/**
+ * DetectCategoryPagination.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class DetectCategoryPagination
+ *
+ * @package WordPressURLDetector
+ */
 class DetectCategoryPagination
 {
 
@@ -21,11 +35,11 @@ class DetectCategoryPagination
         // info we need to get correct pagination URLs
         $args = [ 'public' => true ];
 
-        $category_links = [];
-        $urls_to_include = [];
+        $categoryLinks = [];
+        $urlsToInclude = [];
         $taxonomies = get_taxonomies($args, 'objects');
-        $pagination_base = $wp_rewrite->pagination_base;
-        $default_posts_per_page = get_option('posts_per_page');
+        $paginationBase = $wp_rewrite->pagination_base;
+        $postsPerPage = get_option('posts_per_page');
 
         foreach ($taxonomies as $taxonomy) {
             /** @var list<\WP_Term> $terms */
@@ -35,30 +49,25 @@ class DetectCategoryPagination
             );
 
             foreach ($terms as $term) {
-                $term_link = get_term_link($term);
+                $termLink = get_term_link($term);
 
-                if (! is_string($term_link)) {
+                if (! is_string($termLink)) {
                     continue;
                 }
-                $permalink = trim($term_link);
 
-                $total_posts = $term->count;
-
-                $term_url = $permalink;
-
-                $category_links[$term_url] = $total_posts;
+                $categoryLinks[trim($termLink)] = $term->count;
             }
         }
 
-        foreach ($category_links as $term => $total_posts) {
-            $total_pages = ceil($total_posts / $default_posts_per_page);
+        foreach ($categoryLinks as $term => $totalPosts) {
+            $totalPages = ceil($totalPosts / $postsPerPage);
 
-            for ($page = 1; $page <= $total_pages; $page++) {
-                $urls_to_include[] =
-                    "{$term}{$pagination_base}/{$page}/";
+            for ($page = 1; $page <= $totalPages; $page += 1) {
+                $urlsToInclude[] =
+                    "{$term}{$paginationBase}/{$page}/";
             }
         }
 
-        return $urls_to_include;
+        return $urlsToInclude;
     }
 }
