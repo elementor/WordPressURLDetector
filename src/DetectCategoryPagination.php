@@ -28,6 +28,7 @@ class DetectCategoryPagination
      */
     public static function detect(): array
     {
+        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
         global $wp_rewrite, $wpdb;
 
         // first we get each category with total posts as an array
@@ -38,6 +39,7 @@ class DetectCategoryPagination
         $categoryLinks = [];
         $urlsToInclude = [];
         $taxonomies = get_taxonomies($args, 'objects');
+        // phpcs:ignore Squiz.NamingConventions.ValidVariableName
         $paginationBase = $wp_rewrite->pagination_base;
         $postsPerPage = get_option('posts_per_page');
 
