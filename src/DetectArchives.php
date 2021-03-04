@@ -1,9 +1,23 @@
 <?php
 
+/**
+ * DetectArchives.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class DetectArchives
+ *
+ * @package WordPressURLDetector
+ */
 class DetectArchives
 {
 
@@ -22,42 +36,26 @@ class DetectArchives
     {
         global $wpdb;
 
-        $archive_urls = [];
-
-        $archive_urls_with_markup = '';
-
-        $yearly_archives = wp_get_archives(
+        // wp_get_archives() with echo=0 will return string
+        $archiveURLsHTML = wp_get_archives(
             [
                 'type' => 'yearly',
                 'echo' => 0,
             ]
-        );
-
-        $archive_urls_with_markup .=
-            is_string($yearly_archives) ? $yearly_archives : '';
-
-        $monthly_archives = wp_get_archives(
+        ) . wp_get_archives(
             [
                 'type' => 'monthly',
                 'echo' => 0,
             ]
-        );
-
-        $archive_urls_with_markup .=
-            is_string($monthly_archives) ? $monthly_archives : '';
-
-        $daily_archives = wp_get_archives(
+        ) . wp_get_archives(
             [
                 'type' => 'daily',
                 'echo' => 0,
             ]
         );
 
-        $archive_urls_with_markup .=
-            is_string($daily_archives) ? $daily_archives : '';
-
-        $url_matching_regex = '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#';
-        preg_match_all($url_matching_regex, $archive_urls_with_markup, $matches);
+        $matchURLRegex = '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#';
+        preg_match_all($matchURLRegex, $archiveURLsHTML, $matches);
 
         return $matches[0];
     }
