@@ -59,7 +59,7 @@
     "scripts": {
       "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan --configuration conf/phpstan.neon analyse",
       "phpcbf": "vendor/bin/phpcbf --standard=conf/phpcs.xml . bin/wordpressurldetector",
-      "phpcs":  "vendor/bin/phpcs --standard=conf/phpcs.xml . bin/wordpressurldetector",
+      "phpcs":  "vendor/bin/phpcs -s --standard=conf/phpcs.xml . bin/wordpressurldetector",
       "pest": "vendor/bin/pest",
       "coverage": "vendor/bin/pest --coverage",
       "lint": "vendor/bin/parallel-lint --exclude vendor .",
