@@ -1,12 +1,21 @@
 <?php
 
+/**
+ * SiteInfo.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
-/*
+/**
     Singleton instance to allow instantiating once and allow reading
-    static properties throughout plugin
+    static properties throughout
 */
 class SiteInfo
 {
@@ -28,19 +37,14 @@ class SiteInfo
      */
     public function __construct()
     {
-        $upload_path_and_url = wp_upload_dir();
-        $site_url = trailingslashit(site_url());
+        $uploadPathAndURL = wp_upload_dir();
+        $siteURL = trailingslashit(site_url());
 
         // properties which should not change during plugin execution
         self::$info = [
             // Core
             'site_path' => ABSPATH,
-            'site_url' => $site_url,
-
-            /*
-                Note:  'home_path' => get_home_path(),
-                // errors trying to find it in WordPressURLDetector\get_home_path()...
-            */
+            'site_url' => $siteURL,
             'home_url' => trailingslashit(get_home_url()),
             'includes_path' => trailingslashit(ABSPATH . WPINC),
             'includes_url' => includes_url(),
@@ -59,8 +63,8 @@ class SiteInfo
             'content_path' => trailingslashit(WP_CONTENT_DIR),
             'content_url' => trailingslashit(content_url()),
             'uploads_path' =>
-                trailingslashit($upload_path_and_url['basedir']),
-            'uploads_url' => trailingslashit($upload_path_and_url['baseurl']),
+                trailingslashit($uploadPathAndURL['basedir']),
+            'uploads_url' => trailingslashit($uploadPathAndURL['baseurl']),
 
             // Plugins
             'plugins_path' => trailingslashit(WP_PLUGIN_DIR),
@@ -124,27 +128,6 @@ class SiteInfo
         return self::$info[$key];
     }
 
-    // TODO Use WP_Http 'curl_enabled' => $this->hasCurlSupport(),
-    // didn't see the method vailable in WP_Http
-    public static function hasCURLSupport(): bool
-    {
-        if (self::$instance === null) {
-             self::$instance = new SiteInfo();
-        }
-
-        return extension_loaded('curl');
-    }
-
-    public static function isUploadsWritable(): bool
-    {
-        if (self::$instance === null) {
-             self::$instance = new SiteInfo();
-        }
-
-        $uploads_dir = self::$info['uploads_path'];
-        return file_exists($uploads_dir) && is_writeable($uploads_dir);
-    }
-
     public static function permalinksAreCompatible(): bool
     {
         if (self::$instance === null) {
@@ -176,15 +159,15 @@ class SiteInfo
              self::$instance = new SiteInfo();
         }
 
-        $url_host = parse_url(self::$info['site_url'], PHP_URL_HOST);
+        $urlHost = parse_url(self::$info['site_url'], PHP_URL_HOST);
 
-        if (! is_string($url_host)) {
+        if (! is_string($urlHost)) {
             $err = 'Failed to get hostname from Site URL';
             WsLog::l($err);
             throw new \WordPressURLDetector\WordPressURLDetectorException($err);
         }
 
-        return $url_host;
+        return $urlHost;
     }
 
     public function debug(): void

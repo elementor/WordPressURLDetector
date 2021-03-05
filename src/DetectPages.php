@@ -1,9 +1,21 @@
 <?php
 
+/**
+ * DetectPages.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Detects Page URLs
+ */
 class DetectPages
 {
 
@@ -16,25 +28,23 @@ class DetectPages
     {
         global $wpdb;
 
-        $page_urls = [];
-
-        $page_ids = $wpdb->get_col(
+        $pageIDs = $wpdb->get_col(
             "SELECT ID
             FROM {$wpdb->posts}
             WHERE post_status = 'publish'
             AND post_type = 'page'"
         );
 
-        foreach ($page_ids as $page_id) {
-            $permalink = get_page_link($page_id);
-
-            if (strpos($permalink, '?post_type') !== false) {
-                continue;
+        return array_filter(
+            array_map(
+                static function ($pageID) {
+                    return get_page_link($pageID);
+                },
+                $pageIDs
+            ),
+            static function ($permalink) {
+                return strpos($permalink, '?post_type') === false;
             }
-
-            $page_urls[] = $permalink;
-        }
-
-        return $page_urls;
+        );
     }
 }
