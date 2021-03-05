@@ -36,13 +36,17 @@ class DetectCategoryPagination
         // TODO: move call to parent/code to testable unit
         // get pagination base from rewrite patterns in WP database
         $paginationBase =
-            explode('/',
+            explode(
+                '/',
                 key(
                     array_filter(
-                        get_option( 'rewrite_rules' ),
-                        function($rule) {
+                        get_option('rewrite_rules'),
+                        static function ($rule) {
                             return strpos($rule, 'index.php?&paged=$matches[1]') !== false;
-                        })))[0];
+                        }
+                    )
+                )
+            )[0];
 
         $categoryLinks = [];
         $urlsToInclude = [];
