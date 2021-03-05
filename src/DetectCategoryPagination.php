@@ -33,7 +33,7 @@ class DetectCategoryPagination
         // info we need to get correct pagination URLs
         $args = [ 'public' => true ];
 
-        $paginationBase = getPaginationBase();
+        $paginationBase = SiteInfo::getPaginationBase();
         $categoryLinks = [];
         $urlsToInclude = [];
         $taxonomies = get_taxonomies($args, 'objects');
@@ -67,24 +67,5 @@ class DetectCategoryPagination
         }
 
         return $urlsToInclude;
-    }
-
-    /*
-     * get pagination base from rewrite patterns in WP database
-     */
-    public static function getPaginationBase(): string
-    {
-        return
-            explode(
-                '/',
-                key(
-                    array_filter(
-                        get_option('rewrite_rules'),
-                        static function ($rule) {
-                            return strpos($rule, 'index.php?&paged=$matches[1]') !== false;
-                        }
-                    )
-                )
-            )[0];
     }
 }

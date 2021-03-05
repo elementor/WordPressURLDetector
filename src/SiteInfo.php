@@ -188,4 +188,23 @@ class SiteInfo
 
         return self::$info;
     }
+
+    /*
+     * get pagination base from rewrite patterns in WP database
+     */
+    public static function getPaginationBase(): string
+    {
+        return
+            explode(
+                '/',
+                key(
+                    array_filter(
+                        get_option('rewrite_rules'),
+                        static function ($rule) {
+                            return strpos($rule, 'index.php?&paged=$matches[1]') !== false;
+                        }
+                    )
+                )
+            )[0];
+    }
 }

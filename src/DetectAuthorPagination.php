@@ -1,9 +1,21 @@
 <?php
 
+/**
+ * DetectAuthorPagination.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Detects Author pagination URLs
+ */
 class DetectAuthorPagination
 {
 
@@ -12,46 +24,40 @@ class DetectAuthorPagination
      *
      * @return array<string> list of URLs
      */
-    public static function detect( string $wp_site_url ): array
+    public static function detect( string $wpSiteURL ): array
     {
-        global $wp_rewrite, $wpdb;
-
         $public = true;
-        $authors_urls = [];
-        $urls_to_include = [];
+        $authorURLs = [];
+        $urlsToInclude = [];
         $users = get_users();
-        $pagination_base = $wp_rewrite->pagination_base;
-        $default_posts_per_page = get_option('posts_per_page');
+        $paginationBase = SiteInfo::getPaginationBase();
+        $defaultPostsPerPage = get_option('posts_per_page');
 
         foreach ($users as $author) {
-            $author_link = get_author_posts_url($author->ID);
+            $authorLink = get_author_posts_url($author->ID);
 
-            if (! is_string($author_link)) {
+            if (! is_string($authorLink)) {
                 continue;
             }
 
-            $permalink = trim($author_link);
-
-            $total_posts = count_user_posts($author->ID, 'post', $public);
-
-            $author_url = str_replace(
-                $wp_site_url,
+            $authorURL = str_replace(
+                $wpSiteURL,
                 '',
-                $permalink
+                trim($authorLink)
             );
 
-            $authors_urls[$author_url] = $total_posts;
+            $authorURLs[$authorURL] = count_user_posts($author->ID, 'post', $public);
         }
 
-        foreach ($authors_urls as $author => $total_posts) {
-            $total_pages = ceil($total_posts / $default_posts_per_page);
+        foreach ($authorURLs as $author => $totalPosts) {
+            $totalPages = ceil($totalPosts / $defaultPostsPerPage);
 
-            for ($page = 1; $page <= $total_pages; $page++) {
-                $urls_to_include[] =
-                    "/{$author}{$pagination_base}/{$page}/";
+            for ($page = 1; $page <= $totalPages; $page += 1) {
+                $urlsToInclude[] =
+                    "/{$author}{$paginationBase}/{$page}/";
             }
         }
 
-        return $urls_to_include;
+        return $urlsToInclude;
     }
 }
