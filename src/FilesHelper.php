@@ -110,7 +110,7 @@ class FilesHelper
      *
      * @param array<string> $urls list of absolute or relative URLs
      * @return array<string>|array<null> list of relative URLs
-     * @throws \WordPressURLDetector\WordPressURLDetectorException
+     * @throws \WordPressURLDetector\Exception
      */
     // TODO: use thephpleague/uri to simplify
     // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
@@ -121,7 +121,7 @@ class FilesHelper
         if (! is_string($homeURL)) {
             $err = 'Home URL not defined';
             WsLog::l($err);
-            throw new \WordPressURLDetector\WordPressURLDetectorException($err);
+            throw new \WordPressURLDetector\Exception($err);
         }
 
         return array_map(

@@ -26,7 +26,7 @@ class DetectSitemaps
      * Detect Sitemaps
      *
      * @return array<string> list of URLs
-     * @throws \WordPressURLDetector\WordPressURLDetectorException
+     * @throws \WordPressURLDetector\Exception
      */
     public static function detect( string $wpSiteURL ): array // phpcs:ignore
     {
@@ -137,9 +137,9 @@ class DetectSitemaps
                     );
                 }
             }
-        } catch (\WordPressURLDetector\WordPressURLDetectorException $e) {
+        } catch (\WordPressURLDetector\Exception $e) {
             WsLog::l($e->getMessage());
-            throw new \WordPressURLDetector\WordPressURLDetectorException($e->getMessage(), 0, $e);
+            throw new \WordPressURLDetector\Exception($e->getMessage(), 0, $e);
         }
 
         return $sitemapsURLs;

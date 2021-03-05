@@ -1,7 +1,7 @@
 <?php
 
 /**
- * WordPressURLDetectorException.php
+ * Exception.php
  *
  * @package           WordPressURLDetector
  * @author            Leon Stafford <me@ljs.dev>

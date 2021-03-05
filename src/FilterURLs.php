@@ -16,14 +16,14 @@ class FilterURLs
      *
      * @param array<string> $urls list of absolute or relative URLs
      * @return array<string>|array<null> list of relative URLs
-     * @throws \WordPressURLDetector\WordPressURLDetectorException
+     * @throws \WordPressURLDetector\Exception
      */
     public static function filter( array $urls, string $home_url ): array
     {
         if ($home_url === '') {
             // TODO: parse URL for validity
             $err = 'Home URL not defined ';
-            throw new \WordPressURLDetector\WordPressURLDetectorException($err);
+            throw new \WordPressURLDetector\Exception($err);
         }
 
         $cleaned_urls = array_map(

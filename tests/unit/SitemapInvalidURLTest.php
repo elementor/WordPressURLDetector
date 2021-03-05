@@ -13,7 +13,7 @@ class SitemapInvalidURLTest extends \PHPUnit\Framework\TestCase
      */
     public function testInvalidURL( $url )
     {
-        $this->expectException('WordPressURLDetector\WordPressURLDetectorException');
+        $this->expectException('WordPressURLDetector\Exception');
         $parser = new SitemapParser('SitemapParser');
         $this->assertInstanceOf('WordPressURLDetector\SitemapParser', $parser);
         $parser->parse($url);

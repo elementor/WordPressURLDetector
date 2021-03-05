@@ -85,7 +85,7 @@ class SiteInfo
     /**
      * Get Path via name
      *
-     * @throws \WordPressURLDetector\WordPressURLDetectorException
+     * @throws \WordPressURLDetector\Exception
      */
     public static function getPath( string $name ): string
     {
@@ -99,7 +99,7 @@ class SiteInfo
         if (! array_key_exists($key, self::$info)) {
             $err = 'Attempted to access missing SiteInfo path';
             WsLog::l($err);
-            throw new \WordPressURLDetector\WordPressURLDetectorException($err);
+            throw new \WordPressURLDetector\Exception($err);
         }
 
         // Standardise all paths to use / (Windows support)
@@ -109,7 +109,7 @@ class SiteInfo
     /**
      * Get URL via name
      *
-     * @throws \WordPressURLDetector\WordPressURLDetectorException
+     * @throws \WordPressURLDetector\Exception
      */
     public static function getUrl( string $name ): string
     {
@@ -122,7 +122,7 @@ class SiteInfo
         if (! array_key_exists($key, self::$info)) {
             $err = 'Attempted to access missing SiteInfo URL';
             WsLog::l($err);
-            throw new \WordPressURLDetector\WordPressURLDetectorException($err);
+            throw new \WordPressURLDetector\Exception($err);
         }
 
         return self::$info[$key];
@@ -151,7 +151,7 @@ class SiteInfo
     /**
      * Get Site URL host
      *
-     * @throws \WordPressURLDetector\WordPressURLDetectorException
+     * @throws \WordPressURLDetector\Exception
      */
     public static function getSiteURLHost(): string
     {
@@ -164,7 +164,7 @@ class SiteInfo
         if (! is_string($urlHost)) {
             $err = 'Failed to get hostname from Site URL';
             WsLog::l($err);
-            throw new \WordPressURLDetector\WordPressURLDetectorException($err);
+            throw new \WordPressURLDetector\Exception($err);
         }
 
         return $urlHost;

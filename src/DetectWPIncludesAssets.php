@@ -28,7 +28,7 @@ class DetectWPIncludesAssets
      * Detect assets within wp-includes path
      *
      * @return array<string> list of URLs
-     * @throw WordPressURLDetectorException
+     * @throw Exception
      */
     public static function detect( string $includesPath, string $includesURL, string $homeURL ): array
     {
