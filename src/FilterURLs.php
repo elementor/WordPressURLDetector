@@ -30,7 +30,7 @@ class FilterURLs
             // trim hashes/query strings
             static function ( $url ) use ( $home_url ) {
                 if (! $url) {
-                    return;
+                    return [];
                 }
 
                 // NOTE: 2 x str_replace's significantly faster than
@@ -50,29 +50,25 @@ class FilterURLs
                 );
 
                 if (! is_string($url)) {
-                    return;
+                    return [];
                 }
 
                 $url = strtok($url, '#');
 
                 if (! $url) {
-                    return;
+                    return [];
                 }
 
                 $url = strtok($url, '?');
 
                 if (! $url) {
-                    return;
+                    return [];
                 }
 
                 return $url;
             },
             $urls
         );
-
-        if (empty($cleaned_urls)) {
-            return [];
-        }
 
         return $cleaned_urls;
     }
