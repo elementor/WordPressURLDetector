@@ -19,6 +19,7 @@
     },
     "require": {
         "php": ">=7.4",
+        "thephpleague/uri": "^6.4.0",
         "monolog/monolog": "^2.2.0",
         "ext-mbstring": "*",
         "ext-simplexml": "*",
