@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * FilesHelper.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
@@ -7,6 +16,9 @@ namespace WordPressURLDetector;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
+/**
+ * Helper methods for working with a WordPress site's filesystem
+ */
 class FilesHelper
 {
 
@@ -19,7 +31,7 @@ class FilesHelper
     {
         $files = [];
 
-        $site_path = SiteInfo::getPath('site');
+        $sitePath = SiteInfo::getPath('site');
 
         if (is_dir($dir)) {
             $iterator = new RecursiveIteratorIterator(
@@ -29,18 +41,18 @@ class FilesHelper
                 )
             );
 
-            foreach ($iterator as $filename => $file_object) {
-                $path_crawlable = self::filePathLooksCrawlable($filename);
+            foreach (array_keys($iterator) as $filename) {
+                $pathCrawlable = self::filePathLooksCrawlable($filename);
 
-                if (!$path_crawlable) {
+                if (!$pathCrawlable) {
                     continue;
                 }
 
-                if (!is_string($site_path)) {
+                if (!is_string($sitePath)) {
                     continue;
                 }
 
-                $url = str_replace($site_path, '/', $filename);
+                $url = str_replace($sitePath, '/', $filename);
 
                 if (!is_string($url)) {
                     continue;
@@ -59,99 +71,22 @@ class FilesHelper
      * @return bool  True if the given file does not have a disallowed filename
      *               or extension.
      */
-    public static function filePathLooksCrawlable( string $file_name ): bool
+    public static function filePathLooksCrawlable( string $filename ): bool
     {
-        $filenames_to_ignore = [
-            '__MACOSX',
-            '.babelrc',
-            '.git',
-            '.gitignore',
-            '.gitkeep',
-            '.htaccess',
-            '.php',
-            '.svn',
-            '.travis.yml',
-            'backwpup',
-            'bower_components',
-            'bower.json',
-            'composer.json',
-            'composer.lock',
-            'config.rb',
-            'current-export',
-            'Dockerfile',
-            'gulpfile.js',
-            'latest-export',
-            'LICENSE',
-            'Makefile',
-            'node_modules',
-            'package.json',
-            'pb_backupbuddy',
-            'plugins/wp2static',
-            'previous-export',
-            'README',
-            'static-html-output-plugin',
-            '/tests/',
-            'thumbs.db',
-            'tinymce',
-            'wc-logs',
-            'wpallexport',
-            'wpallimport',
-            'wp-static-html-output', // exclude earlier version exports
-            'wp2static-addon',
-            'wp2static-crawled-site',
-            'wp2static-processed-site',
-            'wp2static-working-files',
-            'yarn-error.log',
-            'yarn.lock',
-        ];
+        // TODO: get from DetectorConfig
+        $filenamesToIgnore = [];
 
-        $filenames_to_ignore =
-            apply_filters(
-                'wp2static_filenames_to_ignore',
-                $filenames_to_ignore
-            );
+        $filenameMatches = 0;
 
-        $filename_matches = 0;
-
-        str_ireplace($filenames_to_ignore, '', $file_name, $filename_matches);
+        str_ireplace($filenamesToIgnore, '', $filename, $filenameMatches);
 
         // If we found matches we don't need to go any further
-        if ($filename_matches) {
+        if ($filenameMatches) {
             return false;
         }
 
-        $file_extensions_to_ignore = [
-            '.bat',
-            '.crt',
-            '.DS_Store',
-            '.git',
-            '.idea',
-            '.ini',
-            '.less',
-            '.map',
-            '.md',
-            '.mo',
-            '.php',
-            '.PHP',
-            '.phtml',
-            '.po',
-            '.pot',
-            '.scss',
-            '.sh',
-            '.sql',
-            '.SQL',
-            '.tar.gz',
-            '.tpl',
-            '.txt',
-            '.yarn',
-            '.zip',
-        ];
-
-        $file_extensions_to_ignore =
-            apply_filters(
-                'wp2static_file_extensions_to_ignore',
-                $file_extensions_to_ignore
-            );
+        // TODO: get from DetectorConfig
+        $extensionsToIgnore = [];
 
         /*
           Prepare the file extension list for regex:
@@ -160,8 +95,8 @@ class FilesHelper
           - Add $ at the end to match end of string
           - Add i modifier for case insensitivity
         */
-        foreach ($file_extensions_to_ignore as $extension) {
-            if (preg_match("/\\{$extension}$/i", $file_name)) {
+        foreach ($extensionsToIgnore as $extension) {
+            if (preg_match("/\\{$extension}$/i", $filename)) {
                 return false;
             }
         }
@@ -177,19 +112,21 @@ class FilesHelper
      * @return array<string>|array<null> list of relative URLs
      * @throws \WordPressURLDetector\WordPressURLDetectorException
      */
+    // TODO: use thephpleague/uri to simplify
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public static function cleanDetectedURLs( array $urls ): array
     {
-        $home_url = SiteInfo::getUrl('home');
+        $homeURL = SiteInfo::getUrl('home');
 
-        if (! is_string($home_url)) {
-            $err = 'Home URL not defined ';
+        if (! is_string($homeURL)) {
+            $err = 'Home URL not defined';
             WsLog::l($err);
             throw new \WordPressURLDetector\WordPressURLDetectorException($err);
         }
 
-        $cleaned_urls = array_map(
+        return array_map(
             // trim hashes/query strings
-            static function ( $url ) use ( $home_url ) {
+            static function ( $url ) use ( $homeURL ) {
                 if (! $url) {
                     return;
                 }
@@ -197,7 +134,7 @@ class FilesHelper
                 // NOTE: 2 x str_replace's significantly faster than
                 // 1 x str_replace with search/replace arrays of 2 length
                 $url = str_replace(
-                    $home_url,
+                    $homeURL,
                     '/',
                     $url
                 );
@@ -230,13 +167,5 @@ class FilesHelper
             },
             $urls
         );
-
-        if (empty($cleaned_urls)) {
-            $err = 'No valid URLs left after cleaning';
-            WsLog::l($err);
-            return [];
-        }
-
-        return $cleaned_urls;
     }
 }

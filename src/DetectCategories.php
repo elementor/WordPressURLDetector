@@ -1,9 +1,21 @@
 <?php
 
+/**
+ * DetectCategories.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Detects Category URLs
+ */
 class DetectCategories
 {
 
@@ -14,13 +26,11 @@ class DetectCategories
      */
     public static function detect(): array
     {
-        global $wp_rewrite, $wpdb;
-
         $args = [ 'public' => true ];
 
         $taxonomies = get_taxonomies($args, 'objects');
 
-        $category_urls = [];
+        $categoryURLs = [];
 
         foreach ($taxonomies as $taxonomy) {
             /** @var list<\WP_Term> $terms */
@@ -30,18 +40,18 @@ class DetectCategories
             );
 
             foreach ($terms as $term) {
-                $term_link = get_term_link($term);
+                $termLink = get_term_link($term);
 
-                if (! is_string($term_link)) {
+                if (! is_string($termLink)) {
                     continue;
                 }
 
-                $permalink = trim($term_link);
+                $permalink = trim($termLink);
 
-                $category_urls[] = $permalink;
+                $categoryURLs[] = $permalink;
             }
         }
 
-        return $category_urls;
+        return $categoryURLs;
     }
 }
