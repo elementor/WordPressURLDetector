@@ -29,25 +29,24 @@ class Detector
      */
     public function detectURLs(DetectorConfig $config, SiteInfo $siteInfo): array
     {
-        $this->log->info('Starting to detect WordPress site URLs.');
-
         return array_unique(
             FilesHelper::cleanDetectedURLs(
                 array_merge(
-                    // TODO: move these into detectCommon or such
-                    [
-                        '/',
-                        '/robots.txt',
-                        '/favicon.ico',
-                        '/sitemap.xml', // TODO: should be redundant with recent Sitemap detector
-                    ],
+                    $config->detectCommon ? detectCommon::detect() : [],
                     $config->detectPosts ? DetectPosts::detect() : [],
                     $config->detectPages ? DetectPages::detect() : [],
                     $config->detectCustomPostTypes ? DetectCustomPostType::detect() : [],
                     $config->detectUploads ? FilesHelper::getListOfLocalFilesByDir($siteInfo::getPath('uploads')) : [],
                     $config->detectSitemaps ? DetectSitemaps::detect($siteInfo::getURL('site')) : [],
-                    $config->detectParentThemeAssets ? DetectThemeAssets::detect('parent') : [],
-                    $config->detectChildThemeAssets ? DetectThemeAssets::detect('child') : [],
+                    // TODO: these may as well be generic path/URL directory iterators
+                    $config->detectParentThemeAssets ? DetectThemeAssets::detect(
+                        $siteInfo::getPath('site'),
+                        $siteInfo::getPath('parent_theme'),
+                    ) : [],
+                    $config->detectChildThemeAssets ? DetectThemeAssets::detect(
+                        $siteInfo::getPath('site'),
+                        $siteInfo::getPath('child_theme'),
+                    ) : [],
                     $config->detectPluginAssets ? DetectPluginAssets::detect() : [],
                     $config->detectWPIncludesAssets ? DetectWPIncludesAssets::detect(
                         $siteInfo::getPath('includes'),
