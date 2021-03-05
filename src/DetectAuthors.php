@@ -1,9 +1,21 @@
 <?php
 
+/**
+ * DetectAuthors.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Detects Author URLs
+ */
 class DetectAuthors
 {
 
@@ -14,23 +26,20 @@ class DetectAuthors
      */
     public static function detect(): array
     {
-        global $wp_rewrite, $wpdb;
+        $authorURLs = [];
+        $authors = get_users();
 
-        $authors_urls = [];
-        $users = get_users();
+        foreach ($authors as $author) {
+            $authorLink = get_author_posts_url($author->ID);
 
-        foreach ($users as $author) {
-            $author_link = get_author_posts_url($author->ID);
-
-            if (! is_string($author_link)) {
+            // TODO: check for valid URL here, a bad filter could return anything
+            if (! is_string($authorLink)) {
                 continue;
             }
 
-            $permalink = trim($author_link);
-
-            $authors_urls[] = $permalink;
+            $authorURLs[] = trim($authorLink);
         }
 
-        return $authors_urls;
+        return $authorURLs;
     }
 }
