@@ -28,19 +28,25 @@ class DetectCategoryPagination
      */
     public static function detect(): array
     {
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
-        global $wp_rewrite, $wpdb;
-
         // first we get each category with total posts as an array
         // similar to getting regular category URLs, but with extra
         // info we need to get correct pagination URLs
         $args = [ 'public' => true ];
 
+        // TODO: move call to parent/code to testable unit
+        // get pagination base from rewrite patterns in WP database
+        $paginationBase =
+            explode('/',
+                key(
+                    array_filter(
+                        get_option( 'rewrite_rules' ),
+                        function($rule) {
+                            return strpos($rule, 'index.php?&paged=$matches[1]') !== false;
+                        })))[0];
+
         $categoryLinks = [];
         $urlsToInclude = [];
         $taxonomies = get_taxonomies($args, 'objects');
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName
-        $paginationBase = $wp_rewrite->pagination_base;
         $postsPerPage = get_option('posts_per_page');
 
         foreach ($taxonomies as $taxonomy) {
