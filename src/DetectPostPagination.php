@@ -36,13 +36,7 @@ class DetectPostPagination
 
         // TODO: should be combined into above query
         foreach ($postTypes as $postType) {
-            $postTypeTotal = $wpdb->get_var(
-                $wpdb->prepare(
-                    "SELECT COUNT(*) FROM %s WHERE post_status = 'publish' AND post_type = %s",
-                    $wpdb->posts,
-                    $postType
-                )
-            );
+            $postTypeTotal = WPDB::totalPublishedForPostType($postType);
 
             if (! $postTypeTotal) {
                 continue;

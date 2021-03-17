@@ -53,4 +53,17 @@ class WPDB
             )
         );
     }
+
+    public static function totalPublishedForPostType( string $postType ): int
+    {
+        global $wpdb;
+
+        return $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM %s WHERE post_status = 'publish' AND post_type = %s",
+                $wpdb->posts,
+                $postType
+            )
+        );
+    }
 }
