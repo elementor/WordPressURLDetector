@@ -28,34 +28,13 @@ class DetectPostPagination
      */
     public static function detect( string $wpSiteURL ): array
     {
-        // TODO: move out wpdb calls to a WPDB class for easier testing
-        global $wpdb;
-
-        $posts = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT ID,post_type AS postType
-                 FROM %s
-                 WHERE post_status = 'publish'
-                 AND post_type NOT IN ('revision','nav_menu_item')",
-                $wpdb->posts,
-            )
-        );
-
-        $uniquePostTypes =
-            array_map(
-                static function ($post) {
-                    return $post->postType;
-                },
-                $posts
-            );
-
-        // get all pagination links for each post_type
-        $postTypes = array_unique($uniquePostTypes);
+        $postTypes = WPDB::uniquePublishedPostTypes();
         $paginationBase = SiteInfo::getPaginationBase();
         $defaultPostsPerPage = get_option('posts_per_page');
 
         $urlsToInclude = [];
 
+        // TODO: should be combined into above query
         foreach ($postTypes as $postType) {
             $postTypeTotal = $wpdb->get_var(
                 $wpdb->prepare(
@@ -87,7 +66,7 @@ class DetectPostPagination
 
             $totalPages = ceil($postTypeTotal / $defaultPostsPerPage);
 
-            for ($page = 1; $page <= $totalPages; $page++) {
+            for ($page = 1; $page <= $totalPages; $page += 1) {
                 // TODO: skipping page pagination here, but is it covered elsewhere?
                 if ($postType === 'page') {
                     continue;
