@@ -1,9 +1,23 @@
 <?php
 
+/**
+ * FilterURLs.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class FilterURLs
+ *
+ * @package WordPressURLDetector
+ */
 class FilterURLs
 {
 
@@ -11,24 +25,24 @@ class FilterURLs
      * Filters detected URLs
      *
      *   - forces site root relative
-     *   - removes any trailing hashes or query strings (#. or ?.) 
-     *   - removes empty strings 
+     *   - removes any trailing hashes or query strings (#. or ?.)
+     *   - removes empty strings
      *
      * @param array<string> $urls list of absolute or relative URLs
      * @return array<string>|array<null> list of relative URLs
      * @throws \WordPressURLDetector\Exception
      */
-    public static function filter( array $urls, string $home_url ): array
+    public static function filter( array $urls, string $homeURL ): array
     {
-        if ($home_url === '') {
+        if ($homeURL === '') {
             // TODO: parse URL for validity
             $err = 'Home URL not defined ';
             throw new \WordPressURLDetector\Exception($err);
         }
 
-        $cleaned_urls = array_map(
+        return array_map(
             // trim hashes/query strings
-            static function ( $url ) use ( $home_url ) {
+            static function ( $url ) use ( $homeURL ) {
                 if (! $url) {
                     return [];
                 }
@@ -36,7 +50,7 @@ class FilterURLs
                 // NOTE: 2 x str_replace's significantly faster than
                 // 1 x str_replace with search/replace arrays of 2 length
                 $url = str_replace(
-                    $home_url,
+                    $homeURL,
                     '/',
                     $url
                 );
@@ -69,7 +83,5 @@ class FilterURLs
             },
             $urls
         );
-
-        return $cleaned_urls;
     }
 }
