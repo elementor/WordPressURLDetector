@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * DetectPluginAssets.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
@@ -7,6 +16,11 @@ namespace WordPressURLDetector;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
+/**
+ * Class DetectPluginAssets
+ *
+ * @package WordPressURLDetector
+ */
 class DetectPluginAssets
 {
 
@@ -15,69 +29,70 @@ class DetectPluginAssets
      *
      * @return array<string> list of URLs
      */
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public static function detect(): array
     {
         $files = [];
 
-        $plugins_path = SiteInfo::getPath('plugins');
-        $plugins_url = SiteInfo::getUrl('plugins');
+        $pluginsPath = SiteInfo::getPath('plugins');
+        $pluginsURL = SiteInfo::getUrl('plugins');
 
-        if (is_dir($plugins_path)) {
+        if (is_dir($pluginsPath)) {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator(
-                    $plugins_path,
+                    $pluginsPath,
                     RecursiveDirectoryIterator::SKIP_DOTS
                 )
             );
 
-            $active_plugins = get_option('active_plugins');
+            $activePlugins = get_option('active_plugins');
 
-            $active_plugin_dirs = array_map(
-                static function ( $active_plugin ) {
-                    return explode('/', $active_plugin)[0];
+            $activePluginDirs = array_map(
+                static function ( $activePlugin ) {
+                    return explode('/', $activePlugin)[0];
                 },
-                $active_plugins
+                $activePlugins
             );
 
-            foreach ($iterator as $filename => $file_object) {
-                $path_crawlable =
+            foreach (array_keys($iterator) as $filename) {
+                $pathCrawlable =
                     FilesHelper::filePathLooksCrawlable($filename);
 
-                if (! $path_crawlable) {
+                if (! $pathCrawlable) {
                     continue;
                 }
 
-                $matches_active_plugin_dir =
-                    ( str_replace($active_plugin_dirs, '', $filename) !== $filename );
+                $matchesActivePluginDir =
+                    ( str_replace($activePluginDirs, '', $filename) !== $filename );
 
-                if (! $matches_active_plugin_dir) {
+                if (! $matchesActivePluginDir) {
                     continue;
                 }
 
                 // Standardise all paths to use / (Windows support)
                 $filename = str_replace('\\', '/', $filename);
 
-                $detected_filename =
+                $detectedFilename =
                     str_replace(
-                        $plugins_path,
-                        $plugins_url,
+                        $pluginsPath,
+                        $pluginsURL,
                         $filename
                     );
 
-                $detected_filename =
+                $detectedFilename =
                     str_replace(
                         get_home_url(),
                         '',
-                        $detected_filename
+                        $detectedFilename
                     );
 
-                if (!is_string($detected_filename)) {
+                if (!is_string($detectedFilename)) {
                     continue;
                 }
 
                 array_push(
                     $files,
-                    $detected_filename
+                    $detectedFilename
                 );
             }
         }
