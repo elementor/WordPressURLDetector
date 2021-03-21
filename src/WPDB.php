@@ -30,7 +30,7 @@ class WPDB
      *
      * @return array<string> list of post types
      */
-    public static function uniquePublishedPostTypes(): array
+    public function uniquePublishedPostTypes(): array
     {
         global $wpdb;
 
@@ -54,7 +54,7 @@ class WPDB
         );
     }
 
-    public static function totalPublishedForPostType( string $postType ): int
+    public function totalPublishedForPostType( string $postType ): int
     {
         global $wpdb;
 

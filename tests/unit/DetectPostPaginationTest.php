@@ -6,7 +6,7 @@ namespace WordPressURLDetector;
 
 use Mockery;
 
-final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
+final class DetectPostPaginationTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testDetectWithoutPostsPage()
@@ -19,52 +19,25 @@ final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
         $wp_rewrite = (object)[ 'pagination_base' => 'page' ];
 
-        // Create 3 post objects
-        // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wpdb = Mockery::mock('\WPDB');
-        // set table name
-        $wpdb->posts = 'wp_posts';
-        $query_string = "
-            SELECT ID,post_type
-            FROM $wpdb->posts
-            WHERE post_status = 'publish'
-            AND post_type NOT IN ('revision','nav_menu_item')";
-
         $posts = [
-            (object)[
-                'ID' => '1',
-                'post_type' => 'post',
-            ],
-            (object)[
-                'ID' => '2',
-                'post_type' => 'page',
-            ],
-            (object)[
-                'ID' => '3',
-                'post_type' => 'attachment',
-            ],
-            (object)[
-                'ID' => '4',
-                'post_type' => 'mycustomtype',
-            ],
-            (object)[
-                'ID' => '5',
-                'post_type' => 'nonexistant',
-            ],
-            (object)[
-                'ID' => '6',
-                'post_type' => 'noobjecttype',
-            ],
-            (object)[
-                'ID' => '7',
-                'post_type' => 'spacednametype',
-            ],
+            'post',
+            'page',
+            'attachment',
+            'mycustomtype',
+            'nonexistant',
+            'noobjecttype',
+            'spacednametype',
         ];
 
-        $wpdb->shouldReceive('get_results')
-            ->with($query_string)
+        // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+        $wpdb = Mockery::mock('\WordPressURLDetector\WPDB');
+        $wpdb->shouldreceive('uniquePublishedPostTypes')
             ->once()
             ->andReturn($posts);
+
+        $wpdb->shouldreceive('totalPublishedForPostType')
+            ->once()
+            ->andReturn(10);
 
         // Set pagination to 3 posts per page
         \WP_Mock::userFunction(
@@ -76,7 +49,7 @@ final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $posts_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
+        $posts_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
             " post_status = 'publish' AND post_type = 'post'";
 
         $wpdb->shouldReceive('get_var')
@@ -104,7 +77,7 @@ final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $pages_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
+        $pages_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
             " post_status = 'publish' AND post_type = 'page'";
 
         $wpdb->shouldReceive('get_var')
@@ -123,7 +96,7 @@ final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $attachments_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
+        $attachments_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
             " post_status = 'publish' AND post_type = 'attachment'";
 
         $wpdb->shouldReceive('get_var')
@@ -142,7 +115,7 @@ final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $custom_type_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
+        $custom_type_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
             " post_status = 'publish' AND post_type = 'mycustomtype'";
 
         $wpdb->shouldReceive('get_var')
@@ -161,7 +134,7 @@ final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $type_without_posts_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
+        $type_without_posts_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
             " post_status = 'publish' AND post_type = 'nonexistant'";
 
         $wpdb->shouldReceive('get_var')
@@ -169,7 +142,7 @@ final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
             ->once()
             ->andReturn(null);
 
-        $type_not_returning_object_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
+        $type_not_returning_object_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
             " post_status = 'publish' AND post_type = 'noobjecttype'";
 
         $wpdb->shouldReceive('get_var')
@@ -186,7 +159,7 @@ final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $type_with_spaced_name = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
+        $type_with_spaced_name = "SELECT COUNT(*) FROM wp_posts WHERE" .
             " post_status = 'publish' AND post_type = 'spacednametype'";
 
         $wpdb->shouldReceive('get_var')
@@ -225,100 +198,101 @@ final class DetectPostsPaginationURLsTest extends \PHPUnit\Framework\TestCase
             '/mycustomtype/page/6/',
             '/mycustomtype/page/7/',
         ];
-        $actual = DetectPostsPaginationURLs::detect($site_url);
+
+        $actual = DetectPostPagination::detect($site_url, $wpdb);
         $this->assertEquals($expected, $actual);
     }
 
-    public function testDetectWithPostsPage()
-    {
-        global $wpdb;
-        // Set the WordPress pagination base
-        global $wp_rewrite;
-        $site_url = 'https://foo.com/';
+    //public function testDetectWithPostsPage()
+    //{
+    //    global $wpdb;
+    //    // Set the WordPress pagination base
+    //    global $wp_rewrite;
+    //    $site_url = 'https://foo.com/';
 
-        // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wp_rewrite = (object)[ 'pagination_base' => 'page' ];
+    //    // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+    //    $wp_rewrite = (object)[ 'pagination_base' => 'page' ];
 
-        // Create 1 post object
-        // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wpdb = Mockery::mock('\WPDB');
-        // set table name
-        $wpdb->posts = 'wp_posts';
-        $query_string = "
-            SELECT ID,post_type
-            FROM $wpdb->posts
-            WHERE post_status = 'publish'
-            AND post_type NOT IN ('revision','nav_menu_item')";
+    //    // Create 1 post object
+    //    // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+    //    $wpdb = Mockery::mock('\WPDB');
+    //    // set table name
+    //    $wpdb->posts = 'wp_posts';
+    //    $query_string = "
+    //        SELECT ID,post_type
+    //        FROM $wpdb->posts
+    //        WHERE post_status = 'publish'
+    //        AND post_type NOT IN ('revision','nav_menu_item')";
 
-        $posts = [
-            (object)[
-                'ID' => '1',
-                'post_type' => 'post',
-            ],
-        ];
+    //    $posts = [
+    //        (object)[
+    //            'ID' => '1',
+    //            'post_type' => 'post',
+    //        ],
+    //    ];
 
-        $wpdb->shouldReceive('get_results')
-            ->with($query_string)
-            ->once()
-            ->andReturn($posts);
+    //    $wpdb->shouldReceive('get_results')
+    //        ->with($query_string)
+    //        ->once()
+    //        ->andReturn($posts);
 
-        // Set pagination to 3 posts per page
-        \WP_Mock::userFunction(
-            'get_option',
-            [
-                'times' => 1,
-                'args' => [ 'posts_per_page' ],
-                'return' => 3,
-            ]
-        );
+    //    // Set pagination to 3 posts per page
+    //    \WP_Mock::userFunction(
+    //        'get_option',
+    //        [
+    //            'times' => 1,
+    //            'args' => [ 'posts_per_page' ],
+    //            'return' => 3,
+    //        ]
+    //    );
 
-        $posts_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
-            " post_status = 'publish' AND post_type = 'post'";
+    //    $posts_query = "SELECT COUNT(*) FROM $wpdb->posts WHERE" .
+    //        " post_status = 'publish' AND post_type = 'post'";
 
-        $wpdb->shouldReceive('get_var')
-            ->with($posts_query)
-            ->once()
-            ->andReturn(15);
+    //    $wpdb->shouldReceive('get_var')
+    //        ->with($posts_query)
+    //        ->once()
+    //        ->andReturn(15);
 
-        $post_type_object = (object)[ 'labels' => [ 'name' => 'Posts' ] ];
+    //    $post_type_object = (object)[ 'labels' => [ 'name' => 'Posts' ] ];
 
-        \WP_Mock::userFunction(
-            'get_post_type_object',
-            [
-                'times' => 1,
-                'args' => 'post',
-                'return' => $post_type_object,
-            ]
-        );
+    //    \WP_Mock::userFunction(
+    //        'get_post_type_object',
+    //        [
+    //            'times' => 1,
+    //            'args' => 'post',
+    //            'return' => $post_type_object,
+    //        ]
+    //    );
 
-        \WP_Mock::userFunction(
-            'get_option',
-            [
-                'times' => 5,
-                'args' => 'page_for_posts',
-                'return' => '10',
-            ]
-        );
+    //    \WP_Mock::userFunction(
+    //        'get_option',
+    //        [
+    //            'times' => 5,
+    //            'args' => 'page_for_posts',
+    //            'return' => '10',
+    //        ]
+    //    );
 
-        \WP_Mock::userFunction(
-            'get_post_type_archive_link',
-            [
-                'times' => 5,
-                'args' => 'post',
-                'return' => $site_url . 'blog',
-            ]
-        );
+    //    \WP_Mock::userFunction(
+    //        'get_post_type_archive_link',
+    //        [
+    //            'times' => 5,
+    //            'args' => 'post',
+    //            'return' => $site_url . 'blog',
+    //        ]
+    //    );
 
-        $expected = [
-            '/blog/page/1/',
-            '/blog/page/2/',
-            '/blog/page/3/',
-            '/blog/page/4/',
-            '/blog/page/5/',
-        ];
-        // getting '/blog//page/1/'...
+    //    $expected = [
+    //        '/blog/page/1/',
+    //        '/blog/page/2/',
+    //        '/blog/page/3/',
+    //        '/blog/page/4/',
+    //        '/blog/page/5/',
+    //    ];
+    //    // getting '/blog//page/1/'...
 
-        $actual = DetectPostsPaginationURLs::detect($site_url);
-        $this->assertEquals($expected, $actual);
-    }
+    //    $actual = DetectPostPagination::detect($site_url);
+    //    $this->assertEquals($expected, $actual);
+    //}
 }

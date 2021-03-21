@@ -27,9 +27,9 @@ class DetectPostPagination
      * @return array<string> list of URLs
      */
     // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
-    public static function detect( string $wpSiteURL ): array
+    public static function detect( string $wpSiteURL, WPDB $wpdb ): array
     {
-        $postTypes = WPDB::uniquePublishedPostTypes();
+        $postTypes = $wpdb->uniquePublishedPostTypes();
         $paginationBase = SiteInfo::getPaginationBase();
         $defaultPostsPerPage = get_option('posts_per_page');
 
@@ -37,7 +37,7 @@ class DetectPostPagination
 
         // TODO: should be combined into above query
         foreach ($postTypes as $postType) {
-            $postTypeTotal = WPDB::totalPublishedForPostType($postType);
+            $postTypeTotal = $wpdb->totalPublishedForPostType($postType);
 
             if (! $postTypeTotal) {
                 continue;
