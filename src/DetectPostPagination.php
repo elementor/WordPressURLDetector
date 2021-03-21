@@ -26,6 +26,7 @@ class DetectPostPagination
      *
      * @return array<string> list of URLs
      */
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public static function detect( string $wpSiteURL ): array
     {
         $postTypes = WPDB::uniquePublishedPostTypes();
@@ -48,10 +49,7 @@ class DetectPostPagination
                 continue;
             }
 
-            // cast WP's object back to array
-            $postTypeLabels = (array)$postTypeObj->labels;
-
-            $pluralForm = strtolower($postTypeLabels['name']);
+            $pluralForm = strtolower((array)$postTypeObj->labels)['name'];
 
             // skip post type names containing spaces
             if (strpos($pluralForm, ' ') !== false) {
@@ -85,6 +83,7 @@ class DetectPostPagination
 
                     $urlsToInclude[] = "/{$postArchiveSlug}{$paginationBase}/{$page}/";
                 } else {
+                    // TODO: move into separate Detector for custom post types
                     $urlsToInclude[] =
                         "/{$pluralForm}/{$paginationBase}/{$page}/";
                 }
