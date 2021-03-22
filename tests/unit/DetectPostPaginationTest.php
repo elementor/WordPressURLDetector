@@ -11,7 +11,11 @@ final class DetectPostPaginationTest extends \PHPUnit\Framework\TestCase
 
     public function testDetectWithoutPostsPage()
     {
-        $posts = [
+        // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+        $wpdb = Mockery::mock('\WordPressURLDetector\WPDB');
+        $wpdb->shouldreceive('uniquePublishedPostTypes')
+            ->once()
+            ->andReturn([
             'post',
             'page',
             'attachment',
@@ -19,23 +23,15 @@ final class DetectPostPaginationTest extends \PHPUnit\Framework\TestCase
             'nonexistant',
             'noobjecttype',
             'spacednametype',
-        ];
-
-        // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wpdb = Mockery::mock('\WordPressURLDetector\WPDB');
-        $wpdb->shouldreceive('uniquePublishedPostTypes')
-            ->once()
-            ->andReturn($posts);
+        ]);
 
         $wpdb->shouldreceive('totalPublishedForPostType')
             ->once()
             ->andReturn(10);
 
-        $posts_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
-            " post_status = 'publish' AND post_type = 'post'";
-
         $wpdb->shouldReceive('get_var')
-            ->with($posts_query)
+            ->with("SELECT COUNT(*) FROM wp_posts WHERE" .
+            " post_status = 'publish' AND post_type = 'post'")
             ->once()
             ->andReturn(15);
 
@@ -52,7 +48,6 @@ final class DetectPostPaginationTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-
         \WP_Mock::userFunction(
             'get_option',
             [
@@ -62,107 +57,41 @@ final class DetectPostPaginationTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $pages_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
-            " post_status = 'publish' AND post_type = 'page'";
-
         $wpdb->shouldReceive('get_var')
-            ->with($pages_query)
+            ->with("SELECT COUNT(*) FROM wp_posts WHERE" .
+            " post_status = 'publish' AND post_type = 'page'")
             ->once()
             ->andReturn(9);
 
-        $page_type_object = (object)[ 'labels' => [ 'name' => 'Pages' ] ];
-
-        \WP_Mock::userFunction(
-            'get_post_type_object',
-            [
-                'times' => 1,
-                'args' => 'page',
-                'return' => $page_type_object,
-            ]
-        );
-
-        $attachments_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
-            " post_status = 'publish' AND post_type = 'attachment'";
-
         $wpdb->shouldReceive('get_var')
-            ->with($attachments_query)
+            ->with("SELECT COUNT(*) FROM wp_posts WHERE" .
+            " post_status = 'publish' AND post_type = 'attachment'")
             ->once()
             ->andReturn(13);
 
-        $attachment_type_object = (object)[ 'labels' => [ 'name' => 'Attachments' ] ];
-
-        \WP_Mock::userFunction(
-            'get_post_type_object',
-            [
-                'times' => 1,
-                'args' => 'attachment',
-                'return' => $attachment_type_object,
-            ]
-        );
-
-        $custom_type_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
-            " post_status = 'publish' AND post_type = 'mycustomtype'";
-
         $wpdb->shouldReceive('get_var')
-            ->with($custom_type_query)
+            ->with("SELECT COUNT(*) FROM wp_posts WHERE" .
+            " post_status = 'publish' AND post_type = 'mycustomtype'")
             ->once()
             ->andReturn(21);
 
-        $custom_type_object = (object)[ 'labels' => [ 'name' => 'MyCustomType' ] ];
-
-        \WP_Mock::userFunction(
-            'get_post_type_object',
-            [
-                'times' => 1,
-                'args' => 'mycustomtype',
-                'return' => $custom_type_object,
-            ]
-        );
-
-        $type_without_posts_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
-            " post_status = 'publish' AND post_type = 'nonexistant'";
-
         $wpdb->shouldReceive('get_var')
-            ->with($type_without_posts_query)
+            ->with("SELECT COUNT(*) FROM wp_posts WHERE" .
+            " post_status = 'publish' AND post_type = 'nonexistant'")
             ->once()
             ->andReturn(null);
 
-        $type_not_returning_object_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
-            " post_status = 'publish' AND post_type = 'noobjecttype'";
-
         $wpdb->shouldReceive('get_var')
-            ->with($type_not_returning_object_query)
+            ->with("SELECT COUNT(*) FROM wp_posts WHERE" .
+            " post_status = 'publish' AND post_type = 'noobjecttype'")
             ->once()
             ->andReturn(1);
 
-        \WP_Mock::userFunction(
-            'get_post_type_object',
-            [
-                'times' => 1,
-                'args' => 'noobjecttype',
-                'return' => null,
-            ]
-        );
-
-        $type_with_spaced_name = "SELECT COUNT(*) FROM wp_posts WHERE" .
-            " post_status = 'publish' AND post_type = 'spacednametype'";
-
         $wpdb->shouldReceive('get_var')
-            ->with($type_with_spaced_name)
+            ->with("SELECT COUNT(*) FROM wp_posts WHERE" .
+            " post_status = 'publish' AND post_type = 'spacednametype'")
             ->once()
             ->andReturn(1);
-
-        $spaced_name_type_object =
-            (object)[ 'labels' => [ 'name' => 'Type With Spaces In Name' ] ];
-
-        \WP_Mock::userFunction(
-            'get_post_type_object',
-            [
-                'times' => 1,
-                'args' => 'spacednametype',
-                'return' => $spaced_name_type_object,
-            ]
-        );
 
         $expected = [
             '/page/1/',
