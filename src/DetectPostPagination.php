@@ -27,12 +27,9 @@ class DetectPostPagination
      * @return array<string> list of URLs
      */
     // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
-    public static function detect( string $wpSiteURL, WPDB $wpdb ): array
+    public static function detect( string $wpSiteURL, WPDB $wpdb, string $paginationBase, int $defaultPostsPerPage ): array
     {
         $postTypes = $wpdb->uniquePublishedPostTypes();
-        $paginationBase = SiteInfo::getPaginationBase();
-        $defaultPostsPerPage = get_option('posts_per_page');
-
         $urlsToInclude = [];
 
         // TODO: should be combined into above query
@@ -49,7 +46,8 @@ class DetectPostPagination
                 continue;
             }
 
-            $pluralForm = strtolower((array)$postTypeObj->labels)['name'];
+            $postTypeObjectLabels = (array)$postTypeObj->labels;
+            $pluralForm = strtolower($postTypeObjectLabels['name']);
 
             // skip post type names containing spaces
             if (strpos($pluralForm, ' ') !== false) {

@@ -11,14 +11,6 @@ final class DetectPostPaginationTest extends \PHPUnit\Framework\TestCase
 
     public function testDetectWithoutPostsPage()
     {
-        global $wpdb;
-        // Set the WordPress pagination base
-        global $wp_rewrite;
-        $site_url = 'https://foo.com/';
-
-        // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-        $wp_rewrite = (object)[ 'pagination_base' => 'page' ];
-
         $posts = [
             'post',
             'page',
@@ -39,16 +31,6 @@ final class DetectPostPaginationTest extends \PHPUnit\Framework\TestCase
             ->once()
             ->andReturn(10);
 
-        // Set pagination to 3 posts per page
-        \WP_Mock::userFunction(
-            'get_option',
-            [
-                'times' => 1,
-                'args' => [ 'posts_per_page' ],
-                'return' => 3,
-            ]
-        );
-
         $posts_query = "SELECT COUNT(*) FROM wp_posts WHERE" .
             " post_status = 'publish' AND post_type = 'post'";
 
@@ -57,16 +39,19 @@ final class DetectPostPaginationTest extends \PHPUnit\Framework\TestCase
             ->once()
             ->andReturn(15);
 
-        $post_type_object = (object)[ 'labels' => [ 'name' => 'Posts' ] ];
-
         \WP_Mock::userFunction(
             'get_post_type_object',
             [
-                'times' => 1,
-                'args' => 'post',
-                'return' => $post_type_object,
+                'post' => (object)[ 'labels' => [ 'name' => 'Posts' ] ],
+                'page' => (object)[ 'labels' => [ 'name' => 'Pages' ] ],
+                'attachment' => (object)[ 'labels' => [ 'name' => 'Attachments' ] ],
+                'mycustomtype' => (object)[ 'labels' => [ 'name' => 'MyCustomTypes' ] ],
+                'nonexistant' => null,
+                'noobjecttype' => null,
+                'spacednametype' => (object)[ 'labels' => [ 'name' => 'With Space' ] ],
             ]
         );
+
 
         \WP_Mock::userFunction(
             'get_option',
@@ -199,7 +184,8 @@ final class DetectPostPaginationTest extends \PHPUnit\Framework\TestCase
             '/mycustomtype/page/7/',
         ];
 
-        $actual = DetectPostPagination::detect($site_url, $wpdb);
+
+        $actual = DetectPostPagination::detect('https://foo.com/', $wpdb, 'page', 3);
         $this->assertEquals($expected, $actual);
     }
 

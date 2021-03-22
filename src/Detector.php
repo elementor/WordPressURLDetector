@@ -29,6 +29,8 @@ class Detector
      */
     public function detectURLs(DetectorConfig $config, SiteInfo $siteInfo): array
     {
+        $wpdb = new WPDB();
+
         return array_unique(
             FilesHelper::cleanDetectedURLs(
                 array_merge(
@@ -58,7 +60,13 @@ class Detector
                         $siteInfo::getPath('content'),
                         $siteInfo::getURL('content'),
                     ) : [],
-                    $config->detectPostPagination ? DetectPostPagination::detect($siteInfo::getURL('site')) : [],
+                    $config->detectPostPagination ? DetectPostPagination::detect(
+                        $siteInfo::getURL('site'),
+                        $wpdb,
+                        SiteInfo::getPaginationBase(),
+                        // TODO: move into SiteInfo
+                        get_option('posts_per_page'),
+                    ) : [],
                     $config->detectArchive ? DetectArchive::detect() : [],
                     $config->detectCategories ? DetectCategories::detect() : [],
                     $config->detectCategoryPagination ? DetectCategoryPagination::detect() : [],
