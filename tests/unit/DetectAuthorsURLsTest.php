@@ -1,19 +1,33 @@
 <?php
 
+/**
+ * DetectAuthorsURLsTest.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class DetectAuthorsURLsTest
+ *
+ * @package WordPressURLDetector
+ */
 final class DetectAuthorsURLsTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testDetect()
     {
-        $site_url = 'https://foo.com/';
+        $siteURL = 'https://foo.com/';
         $users = [];
 
         // Create some virtual users
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 3; $i += 1) {
             // Add the user
             $users[] = (object)[ 'ID' => $i ];
 
@@ -23,7 +37,7 @@ final class DetectAuthorsURLsTest extends \PHPUnit\Framework\TestCase
                 [
                     'times' => 1,
                     'args' => [ $i ],
-                    'return' => "{$site_url}users/{$i}",
+                    'return' => "{$siteURL}users/{$i}",
                 ]
             );
         }
@@ -48,9 +62,9 @@ final class DetectAuthorsURLsTest extends \PHPUnit\Framework\TestCase
         );
 
         $expected = [
-            "{$site_url}users/1",
-            "{$site_url}users/2",
-            "{$site_url}users/3",
+            "{$siteURL}users/1",
+            "{$siteURL}users/2",
+            "{$siteURL}users/3",
         ];
         $actual = DetectAuthorsURLs::detect();
         $this->assertEquals($expected, $actual);

@@ -1,18 +1,32 @@
 <?php
 
+/**
+ * DetectPostURLsTest.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
 use Mockery;
 
+/**
+ * Class DetectPostURLsTest
+ *
+ * @package WordPressURLDetector
+ */
 final class DetectPostURLsTest extends \PHPUnit\Framework\TestCase
 {
 
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testDetect()
     {
         global $wpdb;
-        $site_url = 'https://foo.com/';
 
         // Create 3 attachments
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -71,10 +85,5 @@ final class DetectPostURLsTest extends \PHPUnit\Framework\TestCase
         ];
         $actual = DetectPostURLs::detect('%year%/%month%/%day%');
         $this->assertEquals($expected, $actual);
-    }
-
-    public function get_permalink( int $post_id, string $permalink ): string
-    {
-        return "https://foo.com/2020/08/{$post_id}";
     }
 }

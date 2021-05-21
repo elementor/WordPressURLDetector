@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * FileHelperTest.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
@@ -31,6 +40,7 @@ final class FileHelperTest extends \WP_Mock\Tools\TestCase
      *
      * @return void
      */
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testDeleteDirWithFiles()
     {
         // Set up a virual folder structure
@@ -103,6 +113,7 @@ final class FileHelperTest extends \WP_Mock\Tools\TestCase
      *
      * @return void
      */
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testGetListOfLocalFilesByDir()
     {
         // Set up a virual folder structure
@@ -169,6 +180,7 @@ final class FileHelperTest extends \WP_Mock\Tools\TestCase
      *
      * @return void
      */
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testFilePathLooksCrawlable()
     {
         // Default accepted extension
@@ -220,6 +232,7 @@ final class FileHelperTest extends \WP_Mock\Tools\TestCase
      *
      * @return void
      */
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testFilePathLooksCrawlableExtensionFilter()
     {
         // txt extensions should be disallowed
@@ -275,6 +288,7 @@ final class FileHelperTest extends \WP_Mock\Tools\TestCase
      *
      * @return void
      */
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testFilePathLooksCrawlableFilenameFilter()
     {
         // thumbs.db filenames are currently disallowed
@@ -341,11 +355,13 @@ final class FileHelperTest extends \WP_Mock\Tools\TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testCleanDetectedURLs()
     {
         // Mock the WP functions used by FilesHelper::cleanDetectedURLs()
-        $mock = \Mockery::mock('alias:WordPressURLDetector\SiteInfo')
-            ->shouldReceive('getUrl')
+        $mock = \Mockery::mock('alias:WordPressURLDetector\SiteInfo');
+
+        $mock->shouldReceive('getUrl')
             ->andReturn('https://foo.com/');
 
         // No trailing slash

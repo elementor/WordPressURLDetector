@@ -1,18 +1,32 @@
 <?php
 
+/**
+ * DetectPageURLsTest.php
+ *
+ * @package WordPressURLDetector
+ * @author  Leon Stafford <me@ljs.dev>
+ * @license The Unlicense
+ * @link    https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
 use Mockery;
 
+/**
+ * Class DetectPageURLsTest
+ *
+ * @package WordPressURLDetector
+ */
 final class DetectPageURLsTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testDetect()
     {
         global $wpdb;
-        $site_url = 'https://foo.com/';
+        $siteURL = 'https://foo.com/';
 
         // Create 3 attachments
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -29,15 +43,15 @@ final class DetectPageURLsTest extends \PHPUnit\Framework\TestCase
                 [
                     'times' => 1,
                     'args' => [ $i ],
-                    'return' => "{$site_url}page/$i/",
+                    'return' => "{$siteURL}page/$i/",
                 ]
             );
         }
 
         $expected = [
-            "{$site_url}page/1/",
-            "{$site_url}page/2/",
-            "{$site_url}page/3/",
+            "{$siteURL}page/1/",
+            "{$siteURL}page/2/",
+            "{$siteURL}page/3/",
         ];
         $actual = DetectPageURLs::detect();
         $this->assertEquals($expected, $actual);

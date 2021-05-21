@@ -1,19 +1,36 @@
 <?php
 
+/**
+ * DetectAuthorPaginationURLsTest.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class DetectAuthorPaginationURLsTest
+ *
+ * @package WordPressURLDetector
+ */
 final class DetectAuthorPaginationURLsTest extends \PHPUnit\Framework\TestCase
 {
 
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testDetect()
     {
-        $site_url = 'https://foo.com/';
+        $siteURL = 'https://foo.com/';
 
         // Set the WordPress pagination base
+        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
         global $wp_rewrite;
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
         $wp_rewrite = (object)[ 'pagination_base' => '/page' ];
 
         // Set pagination to 3 posts per page
@@ -28,7 +45,7 @@ final class DetectAuthorPaginationURLsTest extends \PHPUnit\Framework\TestCase
         $users = [];
 
         // Create some virtual users
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 3; $i += 1) {
             // Add the user
             $users[] = (object)[ 'ID' => $i ];
 
@@ -38,7 +55,7 @@ final class DetectAuthorPaginationURLsTest extends \PHPUnit\Framework\TestCase
                 [
                     'times' => 1,
                     'args' => [ $i ],
-                    'return' => "{$site_url}users/{$i}",
+                    'return' => "{$siteURL}users/{$i}",
                 ]
             );
 
@@ -94,7 +111,7 @@ final class DetectAuthorPaginationURLsTest extends \PHPUnit\Framework\TestCase
             '/users/3/page/4/',
         ];
 
-        $actual = DetectAuthorPaginationURLs::detect($site_url);
+        $actual = DetectAuthorPaginationURLs::detect($siteURL);
         $this->assertEquals($expected, $actual);
     }
 }

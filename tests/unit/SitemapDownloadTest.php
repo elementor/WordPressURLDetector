@@ -1,9 +1,23 @@
 <?php
 
+/**
+ * SitemapDownloadTest.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class SitemapDownloadTest
+ *
+ * @package WordPressURLDetector
+ */
 class SitemapDownloadTest extends \PHPUnit\Framework\TestCase
 {
 
