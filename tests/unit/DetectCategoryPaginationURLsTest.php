@@ -1,15 +1,30 @@
 <?php
 
+/**
+ * DetectArchiveURLsTest.php
+ *
+ * @package           WordPressURLDetector
+ * @author            Leon Stafford <me@ljs.dev>
+ * @license           The Unlicense
+ * @link              https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class DetectCategoryPaginationURLsTest
+ *
+ * @package WordPressURLDetector
+ */
 final class DetectCategoryPaginationURLsTest extends \PHPUnit\Framework\TestCase
 {
 
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testDetect()
     {
-        $site_url = 'https://foo.com/';
+        $siteURL = 'https://foo.com/';
         $taxonomies = [
             (object)[ 'name' => 'category' ],
             (object)[ 'name' => 'post_tag' ],
@@ -40,18 +55,20 @@ final class DetectCategoryPaginationURLsTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
         ];
-        $term_links = [
-            'category1' => "{$site_url}category/1",
-            'category2' => "{$site_url}category/2",
-            'category3' => "{$site_url}category/3",
+        $termLinkss = [
+            'category1' => "{$siteURL}category/1",
+            'category2' => "{$siteURL}category/2",
+            'category3' => "{$siteURL}category/3",
             // empty term link should be skipped
             'category4' => null,
-            'post_tag1' => "{$site_url}tags/foo/bar",
+            'post_tag1' => "{$siteURL}tags/foo/bar",
         ];
 
         // Set the WordPress pagination base
+        // @phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
         global $wp_rewrite;
         // @phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+        // @phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
         $wp_rewrite = (object)[ 'pagination_base' => '/page' ];
 
         // Set pagination to 3 posts per page
@@ -96,22 +113,22 @@ final class DetectCategoryPaginationURLsTest extends \PHPUnit\Framework\TestCase
                     [
                         'times' => 1,
                         'args' => [ $term ],
-                        'return' => $term_links[$term->name],
+                        'return' => $termLinkss[$term->name],
                     ]
                 );
             }
         }
 
         $expected = [
-            "{$site_url}category/1/page/1/",
-            "{$site_url}category/2/page/1/",
-            "{$site_url}category/3/page/1/",
-            "{$site_url}category/3/page/2/",
-            "{$site_url}tags/foo/bar/page/1/",
-            "{$site_url}tags/foo/bar/page/2/",
-            "{$site_url}tags/foo/bar/page/3/",
-            "{$site_url}tags/foo/bar/page/4/",
-            "{$site_url}tags/foo/bar/page/5/",
+            "{$siteURL}category/1/page/1/",
+            "{$siteURL}category/2/page/1/",
+            "{$siteURL}category/3/page/1/",
+            "{$siteURL}category/3/page/2/",
+            "{$siteURL}tags/foo/bar/page/1/",
+            "{$siteURL}tags/foo/bar/page/2/",
+            "{$siteURL}tags/foo/bar/page/3/",
+            "{$siteURL}tags/foo/bar/page/4/",
+            "{$siteURL}tags/foo/bar/page/5/",
         ];
         $actual = DetectCategoryPaginationURLs::detect();
         $this->assertEquals($expected, $actual);
