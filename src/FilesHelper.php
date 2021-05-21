@@ -31,6 +31,7 @@ class FilesHelper
     {
         $files = [];
 
+        // TODO: move to arg
         $sitePath = SiteInfo::getPath('site');
 
         if (is_dir($dir)) {
@@ -41,22 +42,18 @@ class FilesHelper
                 )
             );
 
-            foreach (array_keys($iterator) as $filename) {
+            foreach (array_keys(iterator_to_array($iterator)) as $filename) {
+                if (! is_string($filename)) {
+                    continue;
+                }
+
                 $pathCrawlable = self::filePathLooksCrawlable($filename);
 
                 if (!$pathCrawlable) {
                     continue;
                 }
 
-                if (!is_string($sitePath)) {
-                    continue;
-                }
-
                 $url = str_replace($sitePath, '/', $filename);
-
-                if (!is_string($url)) {
-                    continue;
-                }
 
                 $files[] = $url;
             }
@@ -85,9 +82,6 @@ class FilesHelper
             return false;
         }
 
-        // TODO: get from DetectorConfig
-        $extensionsToIgnore = [];
-
         /*
           Prepare the file extension list for regex:
           - Add prepending (escaped) \ for a literal . at the start of
@@ -95,8 +89,8 @@ class FilesHelper
           - Add $ at the end to match end of string
           - Add i modifier for case insensitivity
         */
-        foreach ($extensionsToIgnore as $extension) {
-            if (preg_match("/\\{$extension}$/i", $filename)) {
+        foreach ((new DetectorConfig())->fileExtensionIgnorePatterns as $extension) {
+            if ((bool)preg_match("/\\{$extension}$/i", $filename)) {
                 return false;
             }
         }
@@ -110,25 +104,14 @@ class FilesHelper
      *
      * @param array<string> $urls list of absolute or relative URLs
      * @return array<string> list of relative URLs
-     * @throws \WordPressURLDetector\Exception
      */
     // TODO: use thephpleague/uri to simplify
     // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public static function cleanDetectedURLs( array $urls, string $homeURL ): array
     {
-        if (! is_string($homeURL)) {
-            $err = 'Home URL not defined';
-            WsLog::l($err);
-            throw new \WordPressURLDetector\Exception($err);
-        }
-
         return array_map(
             // trim hashes/query strings
-            static function ( $url ) use ( $homeURL ) {
-                if (! $url) {
-                    return '';
-                }
-
+            static function ( $url ) use ( $homeURL ): string {
                 // NOTE: 2 x str_replace's significantly faster than
                 // 1 x str_replace with search/replace arrays of 2 length
                 $url = str_replace(
@@ -145,19 +128,15 @@ class FilesHelper
                     $url
                 );
 
-                if (! is_string($url)) {
-                    return '';
-                }
-
                 $url = strtok($url, '#');
 
-                if (! $url) {
+                if (! is_string($url)) {
                     return '';
                 }
 
                 $url = strtok($url, '?');
 
-                if (! $url) {
+                if (! is_string($url)) {
                     return '';
                 }
 

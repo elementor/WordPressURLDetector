@@ -102,7 +102,7 @@ class DetectorConfig
         '.zip',
     ];
 
-    protected function __construct()
+    public function __construct()
     {
     }
 }
