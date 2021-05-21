@@ -111,7 +111,7 @@ class SiteInfo
      *
      * @throws \WordPressURLDetector\Exception
      */
-    public static function getUrl( string $name ): string
+    public static function getURL( string $name ): string
     {
         if (self::$instance === null) {
              self::$instance = new SiteInfo();

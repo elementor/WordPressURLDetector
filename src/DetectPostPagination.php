@@ -40,13 +40,13 @@ class DetectPostPagination
         foreach ($postTypes as $postType) {
             $postTypeTotal = $wpdb->totalPublishedForPostType($postType);
 
-            if (! $postTypeTotal) {
+            if ($postTypeTotal < 1) {
                 continue;
             }
 
             $postTypeObj = get_post_type_object($postType);
 
-            if (! $postTypeObj) {
+            if ($postTypeObj === null) {
                 continue;
             }
 
@@ -74,7 +74,7 @@ class DetectPostPagination
                         // get FQURL to Posts Page
                         $postArchiveLink = get_post_type_archive_link('post');
 
-                        if ($postArchiveLink) {
+                        if (is_string($postArchiveLink)) {
                             $postArchiveSlug = str_replace(
                                 $wpSiteURL,
                                 '',

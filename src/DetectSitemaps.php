@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
-use WordPressURLDetectorGuzzleHttp\Client;
-use WordPressURLDetectorGuzzleHttp\Psr7\Request;
+use WP2StaticGuzzleHttp\Client;
+use WP2StaticGuzzleHttp\Psr7\Request;
 
 /**
  * Detects Sitemap URLs in a WordPress site
@@ -42,7 +42,7 @@ class DetectSitemaps
 
         $baseURI = $sitePath;
 
-        if ($portOverride) {
+        if ($portOverride !== null && is_int($portOverride)) {
             $baseURI = "{$baseURI}:{$portOverride}";
         }
 

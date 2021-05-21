@@ -40,7 +40,7 @@ class DetectPosts
         foreach ($postIDs as $postID) {
             $permalink = get_permalink($postID);
 
-            if (! $permalink) {
+            if ($permalink === false) {
                 continue;
             }
 

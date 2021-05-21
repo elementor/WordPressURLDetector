@@ -35,7 +35,7 @@ class DetectPluginAssets
         $files = [];
 
         $pluginsPath = SiteInfo::getPath('plugins');
-        $pluginsURL = SiteInfo::getUrl('plugins');
+        $pluginsURL = SiteInfo::getURL('plugins');
 
         if (is_dir($pluginsPath)) {
             $iterator = new RecursiveIteratorIterator(
@@ -48,13 +48,13 @@ class DetectPluginAssets
             $activePlugins = get_option('active_plugins');
 
             $activePluginDirs = array_map(
-                static function ( $activePlugin ) {
+                static function ($activePlugin): string {
                     return explode('/', $activePlugin)[0];
                 },
                 $activePlugins
             );
 
-            foreach (array_keys($iterator) as $filename) {
+            foreach (array_keys(iterator_to_array($iterator)) as $filename) {
                 $pathCrawlable =
                     FilesHelper::filePathLooksCrawlable($filename);
 
@@ -85,10 +85,6 @@ class DetectPluginAssets
                         '',
                         $detectedFilename
                     );
-
-                if (!is_string($detectedFilename)) {
-                    continue;
-                }
 
                 array_push(
                     $files,

@@ -17,8 +17,14 @@
         "docs": "https://github.com/leonstafford/WordPressURLDetector",
         "source": "https://github.com/leonstafford/WordPressURLDetector"
     },
+    "replace": {
+        "guzzlehttp/guzzle":"*",
+        "guzzlehttp/promises":"*",
+        "guzzlehttp/psr7":"*"
+    },
     "require": {
         "php": ">=7.4",
+        "leonstafford/wp2staticguzzle": "^7.2.0",
         "league/uri": "^6.4.0",
         "monolog/monolog": "^2.2.0",
         "ext-mbstring": "*",
