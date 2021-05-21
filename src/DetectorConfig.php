@@ -19,22 +19,26 @@ namespace WordPressURLDetector;
 class DetectorConfig
 {
 
-    public bool $detectArchiveURLs = true;
-    public bool $detectAuthorPaginationURLs = true;
-    public bool $detectAuthorsURLs = true;
-    public bool $detectCategoryPaginationURLs = true;
-    public bool $detectCategoryURLs = true;
+    public bool $detectArchives = true;
+    public bool $detectAuthorPagination = true;
+    public bool $detectAuthors = true;
+    public bool $detectCategoryPagination = true;
+    public bool $detectCategories = true;
     public bool $detectChildThemeAssets = true;
-    public bool $detectCustomPostTypeURLs = true;
-    public bool $detectPageURLs = true;
+    public bool $detectCommon = true;
+    public bool $detectCustomPostTypes = true;
+    public bool $detectCustomPostType = true;
+    public bool $detectPosts = true;
+    public bool $detectPages = true;
     public bool $detectParentThemeAssets = true;
     public bool $detectPluginAssets = true;
-    public bool $detectPostURLs = true;
-    public bool $detectPostsPaginationURLs = true;
-    public bool $detectSitemapsURLs = true;
+    public bool $detectPostPagination = true;
+    public bool $detectSitemaps = true;
     public bool $detectThirdPartyAssets = true;
+    public bool $detectUploads = true;
     public bool $detectWPIncludesAssets = true;
 
+    /** @var array<string> */
     public array $filenameIgnorePatterns = [
         '__MACOSX',
         '.babelrc',
@@ -70,6 +74,7 @@ class DetectorConfig
         'yarn.lock',
     ];
 
+    /** @var array<string> */
     public array $fileExtensionIgnorePatterns = [
         '.bat',
         '.crt',

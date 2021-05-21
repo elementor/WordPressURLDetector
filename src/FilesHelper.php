@@ -109,15 +109,13 @@ class FilesHelper
      * both with and without starting or trailing slashes.
      *
      * @param array<string> $urls list of absolute or relative URLs
-     * @return array<string>|array<null> list of relative URLs
+     * @return array<string> list of relative URLs
      * @throws \WordPressURLDetector\Exception
      */
     // TODO: use thephpleague/uri to simplify
     // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
-    public static function cleanDetectedURLs( array $urls ): array
+    public static function cleanDetectedURLs( array $urls, string $homeURL ): array
     {
-        $homeURL = SiteInfo::getUrl('home');
-
         if (! is_string($homeURL)) {
             $err = 'Home URL not defined';
             WsLog::l($err);
@@ -128,7 +126,7 @@ class FilesHelper
             // trim hashes/query strings
             static function ( $url ) use ( $homeURL ) {
                 if (! $url) {
-                    return;
+                    return '';
                 }
 
                 // NOTE: 2 x str_replace's significantly faster than
@@ -148,19 +146,19 @@ class FilesHelper
                 );
 
                 if (! is_string($url)) {
-                    return;
+                    return '';
                 }
 
                 $url = strtok($url, '#');
 
                 if (! $url) {
-                    return;
+                    return '';
                 }
 
                 $url = strtok($url, '?');
 
                 if (! $url) {
-                    return;
+                    return '';
                 }
 
                 return $url;
