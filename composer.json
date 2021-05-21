@@ -43,6 +43,7 @@
         "phpstan/phpstan-strict-rules": "*",
         "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "dev-master",
+        "szepeviktor/phpstan-wordpress": "*",
         "szepeviktor/phpcs-psr-12-neutron-hybrid-ruleset": "*",
         "vimeo/psalm": "*"
     },
@@ -58,7 +59,7 @@
         "classmap-authoritative": true
     },
     "scripts": {
-      "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan --configuration conf/phpstan.neon analyse",
+      "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan --configuration=conf/phpstan.neon analyse",
       "phpcbf": "vendor/bin/phpcbf --standard=conf/phpcs.xml . bin/wordpressurldetector",
       "phpcs":  "vendor/bin/phpcs -s --standard=conf/phpcs.xml . bin/wordpressurldetector",
       "pest": "vendor/bin/pest -c conf/phpunit.xml",

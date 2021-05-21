@@ -1,8 +1,9 @@
 includes:
-    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ../vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ../vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
     level: max
     phpVersion: 80000
     inferPrivatePropertyTypeFromConstructor: true
     paths:
-        - src/
+        - ../src/
