@@ -46,7 +46,11 @@ class DetectWPIncludesAssets
         // return non-empty, rewritten URLs
         return array_filter(
             array_map(
-                static function ($filename) use ($homeURL, $includesPath, $includesURL) {
+                static function ($filename) use ($homeURL, $includesPath, $includesURL): string {
+                    if (! is_string($filename)) {
+                        return '';
+                    }
+
                     $pathCrawlable =
                     FilesHelper::filePathLooksCrawlable($filename);
 
@@ -61,14 +65,9 @@ class DetectWPIncludesAssets
 
                     $detectedFilename = str_replace($homeURL, '', str_replace($includesPath, $includesURL, $filename));
 
-                    // TODO: adjust to array_filter first vs abusing this
-                    if (! is_string($detectedFilename) || !$pathCrawlable) {
-                        return '';
-                    }
-
                     return '/' . $detectedFilename;
                 },
-                array_keys($iterator)
+                array_keys(iterator_to_array($iterator))
             )
         );
     }

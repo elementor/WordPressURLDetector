@@ -30,7 +30,7 @@ class DetectThirdPartyAssets
     {
         return array_merge(
             ThirdParty\DetectCommonCache::detect($wpSiteURL, $wpContentPath, $wpContentURL),
-            ThirdParty\DetectCustomPermalinks::detect(),
+            ThirdParty\DetectCustomPermalinks::detect($wpSiteURL),
         );
     }
 }

@@ -39,7 +39,11 @@ class DetectThemeAssets
                 )
             );
 
-            foreach (array_keys($iterator) as $filename) {
+            foreach (array_keys(iterator_to_array($iterator)) as $filename) {
+                if (! is_string($filename)) {
+                    continue;
+                }
+
                 $pathCrawlable =
                     FilesHelper::filePathLooksCrawlable($filename);
 
@@ -54,10 +58,6 @@ class DetectThemeAssets
                     );
 
                 if (!$pathCrawlable) {
-                    continue;
-                }
-
-                if (!is_string($detectedFilename)) {
                     continue;
                 }
 
