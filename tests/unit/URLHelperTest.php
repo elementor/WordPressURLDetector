@@ -1,9 +1,23 @@
 <?php
 
+/**
+ * URLHelperTest.php
+ *
+ * @package WordPressURLDetector
+ * @author  Leon Stafford <me@ljs.dev>
+ * @license The Unlicense
+ * @link    https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class URLHelperTest
+ *
+ * @package WordPressURLDetector
+ */
 final class URLHelperTest extends \PHPUnit\Framework\TestCase
 {
 
@@ -12,11 +26,11 @@ final class URLHelperTest extends \PHPUnit\Framework\TestCase
      */
     public function testgetProtocolRelativeURL( $url, $expectation )
     {
-        $protocol_relative_url = URLHelper::getProtocolRelativeURL($url);
+        $protocolRelativeURL = URLHelper::getProtocolRelativeURL($url);
 
         $this->assertEquals(
             $expectation,
-            $protocol_relative_url
+            $protocolRelativeURL
         );
     }
 
@@ -130,10 +144,10 @@ final class URLHelperTest extends \PHPUnit\Framework\TestCase
      */
     public function testprotocolRelativeToAbsoluteURL(
         $url,
-        $site_url,
+        $siteURL,
         $expectation
     ) {
-        $url = URLHelper::protocolRelativeToAbsoluteURL($url, $site_url);
+        $url = URLHelper::protocolRelativeToAbsoluteURL($url, $siteURL);
 
         $this->assertEquals(
             $expectation,
@@ -162,12 +176,12 @@ final class URLHelperTest extends \PHPUnit\Framework\TestCase
      */
     public function testisInternalLink(
         $url,
-        $site_url_host,
+        $siteURLHost,
         $expectation
     ) {
         $this->assertEquals(
             $expectation,
-            URLHelper::isInternalLink($url, $site_url_host)
+            URLHelper::isInternalLink($url, $siteURLHost)
         );
     }
 

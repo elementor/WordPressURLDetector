@@ -1,9 +1,23 @@
 <?php
 
+/**
+ * SitemapInvalidURLTest.php
+ *
+ * @package WordPressURLDetector
+ * @author  Leon Stafford <me@ljs.dev>
+ * @license The Unlicense
+ * @link    https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class SitemapInvalidURLTest
+ *
+ * @package WordPressURLDetector
+ */
 class SitemapInvalidURLTest extends \PHPUnit\Framework\TestCase
 {
 

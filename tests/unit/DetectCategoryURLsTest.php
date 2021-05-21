@@ -1,15 +1,30 @@
 <?php
 
+/**
+ * DetectCategoryURLsTest.php
+ *
+ * @package WordPressURLDetector
+ * @author  Leon Stafford <me@ljs.dev>
+ * @license The Unlicense
+ * @link    https://unlicense.org
+ */
+
 declare(strict_types=1);
 
 namespace WordPressURLDetector;
 
+/**
+ * Class DetectCategoryURLsTest
+ *
+ * @package WordPressURLDetector
+ */
 final class DetectCategoryURLsTest extends \PHPUnit\Framework\TestCase
 {
 
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
     public function testDetect()
     {
-        $site_url = 'https://foo.com/';
+        $siteURL = 'https://foo.com/';
         $taxonomies = [
             (object)[ 'name' => 'category' ],
             (object)[ 'name' => 'post_tag' ],
@@ -36,11 +51,11 @@ final class DetectCategoryURLsTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
         ];
-        $term_links = [
-            'category1' => "{$site_url}category/1",
-            'category2' => "{$site_url}category/2",
-            'category3' => "{$site_url}category/3",
-            'post_tag1' => "{$site_url}tags/foo/bar",
+        $termLinkss = [
+            'category1' => "{$siteURL}category/1",
+            'category2' => "{$siteURL}category/2",
+            'category3' => "{$siteURL}category/3",
+            'post_tag1' => "{$siteURL}tags/foo/bar",
         ];
 
         // Set pagination to 3 posts per page
@@ -85,17 +100,17 @@ final class DetectCategoryURLsTest extends \PHPUnit\Framework\TestCase
                     [
                         'times' => 1,
                         'args' => [ $term ],
-                        'return' => $term_links[$term->name],
+                        'return' => $termLinkss[$term->name],
                     ]
                 );
             }
         }
 
         $expected = [
-            "{$site_url}category/1",
-            "{$site_url}category/2",
-            "{$site_url}category/3",
-            "{$site_url}tags/foo/bar",
+            "{$siteURL}category/1",
+            "{$siteURL}category/2",
+            "{$siteURL}category/3",
+            "{$siteURL}tags/foo/bar",
         ];
         $actual = DetectCategoryURLs::detect();
         $this->assertEquals($expected, $actual);

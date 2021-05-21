@@ -27,8 +27,11 @@ class Detector
      *
      * @return array<string> of URLs
      */
-    public function detectURLs(DetectorConfig $config, SiteInfo $siteInfo): array
-    {
+    // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
+    public function detectURLs(
+        DetectorConfig $config,
+        SiteInfo $siteInfo
+    ): array {
         $wpdb = new WPDB();
 
         return array_unique(

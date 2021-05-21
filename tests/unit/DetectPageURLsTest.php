@@ -37,7 +37,7 @@ final class DetectPageURLsTest extends \PHPUnit\Framework\TestCase
         $wpdb->posts = 'wp_posts';
 
         // And URLs for them
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 3; $i += 1) {
             \WP_Mock::userFunction(
                 'get_page_link',
                 [

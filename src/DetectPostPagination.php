@@ -27,8 +27,12 @@ class DetectPostPagination
      * @return array<string> list of URLs
      */
     // phpcs:ignore NeutronStandard.Functions.LongFunction.LongFunction
-    public static function detect( string $wpSiteURL, WPDB $wpdb, string $paginationBase, int $defaultPostsPerPage ): array
-    {
+    public static function detect(
+        string $wpSiteURL,
+        WPDB $wpdb,
+        string $paginationBase,
+        int $defaultPostsPerPage
+    ): array {
         $postTypes = $wpdb->uniquePublishedPostTypes();
         $urlsToInclude = [];
 
