@@ -33,10 +33,6 @@ class DetectAuthors
             $authorLink = get_author_posts_url($author->ID);
 
             // TODO: check for valid URL here, a bad filter could return anything
-            if (! is_string($authorLink)) {
-                continue;
-            }
-
             $authorURLs[] = trim($authorLink);
         }
 

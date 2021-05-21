@@ -37,22 +37,32 @@ class DetectArchives
         global $wpdb;
 
         // wp_get_archives() with echo=0 will return string
-        $archiveURLsHTML = wp_get_archives(
+        // fn signature is string|void, so I use intermediate vars here
+        $yearly = wp_get_archives(
             [
                 'type' => 'yearly',
                 'echo' => 0,
             ]
-        ) . wp_get_archives(
+        );
+
+        $monthly = wp_get_archives(
             [
                 'type' => 'monthly',
                 'echo' => 0,
             ]
-        ) . wp_get_archives(
+        );
+
+        $daily = wp_get_archives(
             [
                 'type' => 'daily',
                 'echo' => 0,
             ]
         );
+
+        $archiveURLsHTML =
+            (is_string($yearly) ? $yearly : '') .
+            (is_string($monthly) ? $monthly : '') .
+            (is_string($daily) ? $daily : '');
 
         $matchURLRegex = '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#';
         preg_match_all($matchURLRegex, $archiveURLsHTML, $matches);

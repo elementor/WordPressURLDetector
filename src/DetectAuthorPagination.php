@@ -36,10 +36,6 @@ class DetectAuthorPagination
         foreach ($users as $author) {
             $authorLink = get_author_posts_url($author->ID);
 
-            if (! is_string($authorLink)) {
-                continue;
-            }
-
             $authorURL = str_replace(
                 $wpSiteURL,
                 '',

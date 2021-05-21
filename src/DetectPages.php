@@ -37,12 +37,12 @@ class DetectPages
 
         return array_filter(
             array_map(
-                static function ($pageID) {
+                static function ($pageID): string {
                     return get_page_link($pageID);
                 },
                 $pageIDs
             ),
-            static function ($permalink) {
+            static function ($permalink): bool {
                 return strpos($permalink, '?post_type') === false;
             }
         );
