@@ -29,24 +29,13 @@ class FilterURLs
      *   - removes empty strings
      *
      * @param array<string> $urls list of absolute or relative URLs
-     * @return array<string>|array<null> list of relative URLs
-     * @throws \WordPressURLDetector\Exception
+     * @return array<string> list of relative URLs
      */
     public static function filter( array $urls, string $homeURL ): array
     {
-        if ($homeURL === '') {
-            // TODO: parse URL for validity
-            $err = 'Home URL not defined ';
-            throw new \WordPressURLDetector\Exception($err);
-        }
-
         return array_map(
             // trim hashes/query strings
-            static function ( $url ) use ( $homeURL ) {
-                if (! $url) {
-                    return [];
-                }
-
+            static function ( $url ) use ( $homeURL ): string {
                 // NOTE: 2 x str_replace's significantly faster than
                 // 1 x str_replace with search/replace arrays of 2 length
                 $url = str_replace(
@@ -63,20 +52,16 @@ class FilterURLs
                     $url
                 );
 
-                if (! is_string($url)) {
-                    return [];
-                }
-
                 $url = strtok($url, '#');
 
-                if (! $url) {
-                    return [];
+                if (! is_string($url)) {
+                    return '';
                 }
 
                 $url = strtok($url, '?');
 
-                if (! $url) {
-                    return [];
+                if (! is_string($url)) {
+                    return '';
                 }
 
                 return $url;
