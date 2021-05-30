@@ -47,6 +47,13 @@ class DetectPluginAssets
 
             $activePlugins = get_option('active_plugins');
 
+            if (is_multisite()) {
+                $activeSitewidePlugins = get_site_option('active_sitewide_plugins');
+                $activeSitewidePlugins = array_keys($activeSitewidePlugins);
+
+                $activePlugins = array_unique(array_merge($activePlugins, $activeSitewidePlugins));
+            }
+
             $activePluginDirs = array_map(
                 static function ($activePlugin): string {
                     return explode('/', $activePlugin)[0];
